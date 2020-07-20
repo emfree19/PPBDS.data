@@ -885,8 +885,5 @@ output$downloadData <- downloadHandler(
     }
   )
 ```
-<<<<<<< HEAD
 
-=======
->>>>>>> master
 
