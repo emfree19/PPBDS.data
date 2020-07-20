@@ -2,15 +2,17 @@
 title: "Tidyverse"
 output: learnr::tutorial
 runtime: shiny_prerendered
+description: "Chapter 2 tutorial"
 ---
 <!-- EF: Initial edit for PR --> 
 
-```{r context = "setup", include=FALSE}
+```{r setup, include=FALSE}
 library(tidyverse)
 library(learnr)
-library(gradethis)
-tutorial_options(exercise.checker = gradethis::grade_learnr)
+library(learnrhash)
+library(shiny)
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+options(tutorial.exercise.timelimit = 60)  
 ```
 
 ```{r, include = FALSE}
@@ -45,10 +47,22 @@ lexus_mileage <- vehicles %>%
   slice(3:9)
 ```
 
+## Introduction 
+
+``` {r name, echo=FALSE}
+question_text(
+  "Student Name:",
+  answer(NULL, correct = TRUE),
+  incorrect = "Ok",
+  try_again_button = "Modify your answer",
+  allow_retry = TRUE
+)
+```
+
 ## Summarize()
 
 ### Exercise 1
-Load the `gapminder` package.
+Load the `gapminder` package. (Note: when you run your code chunk it will have no discernible output)
 ```{r question-1-1, exercise = TRUE}
 
 ```
@@ -230,7 +244,8 @@ quiz(
     answer("Americas"),
     answer("Asia"),
     answer("Europe"),
-    answer("Oceania", correct = TRUE)
+    answer("Oceania", correct = TRUE),
+    allow_retry = TRUE
   )
 )
 ```
@@ -415,7 +430,8 @@ quiz(
     answer("15"),
     answer("42"),
     answer("23"),
-    answer("32", correct = TRUE)
+    answer("32", correct = TRUE),
+    allow_retry = TRUE
   )
 )
 ```
@@ -450,7 +466,8 @@ quiz(
     answer("model"),
     answer("class"),
     answer("trans", correct = TRUE),
-    answer("drive")
+    answer("drive"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -593,7 +610,8 @@ quiz(
     answer("15801"),
     answer("15920, 15801", correct = TRUE),
     answer("15801, 15920, 15921"),
-    answer("15685, 16039")
+    answer("15685, 16039"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -605,7 +623,8 @@ quiz(
     answer("None", correct = TRUE),
     answer("16365, 16366"),
     answer("15920, 15801"),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -625,7 +644,8 @@ quiz(
     answer("None"),
     answer("16365, 16366"),
     answer("15920, 15801", correct = TRUE),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -645,7 +665,8 @@ quiz(
     answer("None", correct = TRUE),
     answer("All"),
     answer("15920, 15801"),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 
@@ -657,7 +678,8 @@ quiz(
     answer("None"),
     answer("All"),
     answer("15920, 15801", correct = TRUE),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -668,7 +690,8 @@ quiz(
     answer("None"),
     answer("All"),
     answer("15920, 15801", correct = TRUE),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -679,7 +702,8 @@ quiz(
     answer("None"),
     answer("All"),
     answer("15920, 15801", correct = TRUE),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -690,7 +714,8 @@ quiz(
     answer("None", correct = TRUE),
     answer("All"),
     answer("15920, 15801"),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -701,7 +726,8 @@ quiz(
     answer("None"),
     answer("All", correct = TRUE),
     answer("15920, 15801"),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -712,7 +738,8 @@ quiz(
     answer("None"),
     answer("All"),
     answer("15920, 15801", correct = TRUE),
-    answer("15801, 15922")
+    answer("15801, 15922"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -723,7 +750,8 @@ quiz(
     answer("id, hwy, cty"),
     answer("hwy, cty", correct = TRUE),
     answer("id, class, drive"),
-    answer("id, make, model, class, drive")
+    answer("id, make, model, class, drive"),
+    allow_retry = TRUE
   )
 )
 ```
@@ -734,7 +762,8 @@ quiz(
     answer("id, hwy, cty"),
     answer("hwy, cty"),
     answer("id, class, drive"),
-    answer("make, model, class, drive", correct = TRUE)
+    answer("make, model, class, drive", correct = TRUE),
+    allow_retry = TRUE
   )
 )
 ```
@@ -753,7 +782,8 @@ table1
 quiz(
   question("Is table1 in tidy format?",
   answer("Yes", correct = TRUE),
-  answer("No")
+  answer("No"),
+  allow_retry = TRUE
 )
 )
 
@@ -772,7 +802,8 @@ table2
 quiz(
   question("Is table2 in tidy format?",
   answer("Yes"),
-  answer("No", correct = TRUE)
+  answer("No", correct = TRUE),
+  allow_retry = TRUE
 )
 )
 ```
@@ -795,6 +826,50 @@ Use `pivot_wider()` to put `table2` into tidy format.
 ```{r question-4-4-hint}
 ... %>%
   pivot_wider(names_from = ..., values_from = ...)
+```
+
+## Submit
+
+```{r encode, echo=FALSE}
+learnrhash::encoder_ui(
+  ui_before = shiny::div(
+    "When you have completed this tutorial, follow these steps:",
+        br(),
+    tags$ol(
+       tags$li("Click Generate Submission"),
+       tags$li("Copy and paste the hash generated into the \"Hash\" textbox"),
+       tags$li("Press 'Create responses.rds'. Nothing will pop up, but this will create an .rds file of your hashed responses."),
+       tags$li("Download the .rds file. A window will pop up asking you where to place the downloaded file. Upload this file to the appropriate Canvas assignment."))
+  )
+)
+```
+
+```{r context="setup"}
+fluidPage(
+    mainPanel(
+          div(id = "form",
+            textInput("hash", "Hash", ""),
+            actionButton("submit", "Create responses.rds", class = "btn-primary"),
+            downloadButton("downloadData", "Download responses.rds")
+          )
+        )
+    )
+```
+
+```{r context="server"}
+
+learnrhash::encoder_logic()
+
+ observeEvent(input$submit,{
+        hash_id <<- input$hash
+        responses <<- data.frame("Hash" = hash_id)
+ })
+output$downloadData <- downloadHandler(
+      filename = "responses.rds",
+      content = function(file) {
+      write_rds(responses, file)
+    }
+  )
 ```
 
 
