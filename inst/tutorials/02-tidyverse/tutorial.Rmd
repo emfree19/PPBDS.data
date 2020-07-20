@@ -1,6 +1,9 @@
 ---
 title: "Tidyverse"
-output: learnr::tutorial
+output:
+  learnr::tutorial:
+      progressive: true
+      allow_skip: true
 runtime: shiny_prerendered
 description: "Chapter 2 tutorial"
 ---
@@ -60,6 +63,17 @@ question_text(
 ```
 
 ## Summarize()
+
+```{r name, echo=FALSE}
+question_text(
+  "Student Name:",
+  answer(NULL, correct = TRUE),
+  incorrect = "Ok",
+  try_again_button = "Modify your answer",
+  allow_retry = TRUE
+)
+```
+
 
 ### Exercise 1
 Load the `gapminder` package. (Note: when you run your code chunk it will have no discernible output)
@@ -871,5 +885,8 @@ output$downloadData <- downloadHandler(
     }
   )
 ```
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 
