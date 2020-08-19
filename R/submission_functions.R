@@ -1,21 +1,24 @@
 #' @title Tutorial submission functions
 #'
 #' @description
-#' The following function has modified from Colin
-#' Rundel's learnrhash package, available at
-#' https://github.com/rundel/learnrhash. Many thanks to Professor Rundel, who
-#' has developed a fantastic tool for courses that teach R and use the learnr
-#' package.
 #'
-#' This note is also modified from Professor Rundel's description: Note that when
-#' including these functions in a learnr Rmd document it is necessary that the
-#' server function, `submission_server()`, be included in an R chunk where
+#' The following function was modified from Colin Rundel's learnrhash package,
+#' available at https://github.com/rundel/learnrhash. Many thanks to Professor
+#' Rundel, who has developed a fantastic tool for courses that teach R and use
+#' the learnr package.
+#'
+#' This note is also modified from Professor Rundel's description: Note that
+#' when including these functions in a learnr Rmd document it is necessary that
+#' the server function, `submission_server()`, be included in an R chunk where
 #' `context="server"`. Conversely, any of the ui functions, `*_ui()`, must *not*
 #' be included in an R chunk with a `context`.
 #'
+#' @param input unused
+#' @param output unused
+#'
 #' @rdname submission_functions
 #' @export
-submission_server <- function() {
+submission_server <- function(input, output) {
   p = parent.frame()
   check_server_context(p)
 
@@ -27,14 +30,14 @@ submission_server <- function() {
         objs = learnr:::get_all_state_objects(session)
         objs = learnr:::submissions_from_state_objects(objs)
 
-        learnrhash::encode_obj(objs)
+        encode_obj(objs)
       }
     )
 
     output$downloadData <- downloadHandler(
       filename = "tutorial_responses.rds",
-      responses <- encoded_txt(),
       content = function(file) {
+        responses <- encoded_txt()
         write_rds(responses, file)
       }
     )
@@ -69,6 +72,21 @@ is_server_context <- function(.envir) {
     inherits(.envir$session, "ShinySession")
 }
 
+#' Encode an R object into hashed text; from github::rundel/learnrhash
+#'
+#' @param obj R object
+#' @param compress Compression method.
+#'
+#' @export
+encode_obj = function(obj, compress = c("bzip2", "gzip", "xz", "none"))  {
+  compress = match.arg(compress)
+
+  raw = serialize(obj, NULL)
+  comp_raw = memCompress(raw, type = compress)
+
+  base64enc::base64encode(comp_raw)
+}
+
 #' @rdname submission_functions
 #' @export
 submission_ui <- shiny::div(
@@ -76,7 +94,7 @@ submission_ui <- shiny::div(
   shiny::tags$br(),
   shiny::tags$ol(
     shiny::tags$li("Click Generate Hash. Nothing will pop up, but this will create an .rds file of your hashed responses."),
-    shiny::tags$li("Click the small unlabelled button next to Generate Hash to download the .rds file. A window will pop up asking you where to place the downloaded file."),
+    shiny::tags$li("Click the Download button next to Generate Hash to download the .rds file. A window will pop up asking you where to place the downloaded file."),
     shiny::tags$li("Upload this file to the appropriate Canvas assignment.")),
   shiny::fluidPage(
     shiny::mainPanel(

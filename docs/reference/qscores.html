@@ -77,7 +77,7 @@ the workload." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PPBDS.data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2.9000</span>
       </span>
     </div>
 
@@ -130,24 +130,27 @@ observations of our data set are the overall rating of the course, as well as
 the workload.</p>
     </div>
 
-    <pre class="usage"><span class='no'>qscores</span></pre>
+    <pre class="usage"><span class='kw'>qscores</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A tibble with 748 observations and 8 variables:</p><dl'>
-<dt>course_name</dt><dd><p>character variable with name of course</p></dd>
-<dt>department</dt><dd><p>character variable representing department of course</p></dd>
-<dt>course_nunber</dt><dd><p>character variable representing department course name listing</p></dd>
-<dt>term</dt><dd><p>character variable with values "2018F" and "2019S"</p></dd>
-<dt>enrollment</dt><dd><p>numeric variable for enrollment in course</p></dd>
+    <p>A tibble with 748 observations and 8 variables:</p><dl>
+<dt>name</dt><dd><p>character variable with name of course</p></dd>
+<dt>department</dt><dd><p>character variable with course department</p></dd>
+<dt>number</dt><dd><p>character variable with course number</p></dd>
+<dt>term</dt><dd><p>character variable with values "2018-Fall" and "2019-Spring"</p></dd>
+<dt>enrollment</dt><dd><p>integer variable with course enrollment</p></dd>
 <dt>hours</dt><dd><p>numeric variable representing hours per week of workload, outside of class time</p></dd>
 <dt>rating</dt><dd><p>numeric variable representing average of students' rating of course
 (1 to 5 scale), with higher numbers indicating a higher rating</p></dd>
-<dt>instructor</dt><dd><p>character variable representing name of instructor</p></dd>
+<dt>instructor</dt><dd><p>character variable with name of instructor</p></dd>
 
 </dl>
 
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>The data for this tibble was generously provided by Aurash Vatan '23.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The data source — skimmed from the Q Guide web app — does not support data
@@ -155,7 +158,44 @@ for courses that are primarily taught in individual sections. As such, large
 courses like freshman Expository Writing (taught in 15-person sections) do
 not have data available. The data set has also been filtered to only include
 courses with more than 15 registered students.</p>
-<p>The data for this tibble was generously provided by Aurash Vatan '23.</p>
+<p></p>
+<p>Table: Data summary</p><table class='table'>
+<tr><td></td><td></td></tr>
+<tr><td>Name</td><td>qscores</td></tr>
+<tr><td>Number of rows</td><td>748</td></tr>
+<tr><td>Number of columns</td><td>8</td></tr>
+<tr><td>_______________________</td><td></td></tr>
+<tr><td>Column type frequency:</td><td></td></tr>
+<tr><td>character</td><td>5</td></tr>
+<tr><td>numeric</td><td>3</td></tr>
+<tr><td>________________________</td><td></td></tr>
+<tr><td>Group variables</td><td>None</td></tr>
+</table>
+
+
+
+<p><strong>Variable type: character</strong></p><table class='table'>
+<tr><td>skim_variable</td><td>n_missing</td><td>complete_rate</td><td>min</td><td>max</td><td>empty</td><td>n_unique</td><td>whitespace</td></tr>
+<tr><td>name</td><td>0</td><td>1</td><td>4</td><td>97</td><td>0</td><td>687</td><td>0</td></tr>
+<tr><td>department</td><td>0</td><td>1</td><td>2</td><td>8</td><td>0</td><td>86</td><td>0</td></tr>
+<tr><td>number</td><td>0</td><td>1</td><td>1</td><td>6</td><td>0</td><td>504</td><td>0</td></tr>
+<tr><td>term</td><td>0</td><td>1</td><td>9</td><td>11</td><td>0</td><td>2</td><td>0</td></tr>
+<tr><td>instructor</td><td>0</td><td>1</td><td>5</td><td>32</td><td>0</td><td>509</td><td>0</td></tr>
+</table>
+
+
+
+<p><strong>Variable type: numeric</strong></p><table class='table'>
+<tr><td>skim_variable</td><td>n_missing</td><td>complete_rate</td><td>mean</td><td>sd</td><td>p0</td><td>p25</td><td>p50</td><td>p75</td><td>p100</td><td>hist</td></tr>
+<tr><td>enrollment</td><td>0</td><td>1</td><td>50.82</td><td>70.38</td><td>16</td><td>21.00</td><td>29.0</td><td>49.0</td><td>744.0</td><td>▇▁▁▁▁</td></tr>
+<tr><td>hours</td><td>0</td><td>1</td><td>6.17</td><td>3.48</td><td>1</td><td>3.77</td><td>5.2</td><td>7.6</td><td>22.5</td><td>▇▅▂▁▁</td></tr>
+<tr><td>rating</td><td>0</td><td>1</td><td>4.18</td><td>0.52</td><td>1</td><td>3.90</td><td>4.2</td><td>4.5</td><td>5.0</td><td>▁▁▁▇▇</td></tr>
+</table>
+
+
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>David Kane</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -172,7 +212,7 @@ courses with more than 15 registered students.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>
