@@ -3948,9 +3948,7 @@ births_plot_2 <- ggplot(data = USB_2000, mapping = aes(x = week_number, y = avg_
 
 ```
 
-
-
-## Wrangling: daily_show_guests
+## Daily Show Guests
 
 Let's do some data wrangling with the `daily_show_guests` tibble from the `fivethirtyeight` tibble. Run `library(fivethirtyeight)` to load up the `fivethirtyeight` package. Then, run `daily_show_guests` to get a run-down on the data in the tibble. Unlike many of the other tibbles we've worked with in this chapter, this one only contains 5 columns, so we don't need to use `glimpse()` or `skim()` to get a grasp of all the data.
 
