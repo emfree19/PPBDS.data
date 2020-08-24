@@ -65,6 +65,7 @@ lexus_mileage <- vehicles %>%
 
 # Needed for later sections of the tutorial 
 library(fivethirtyeight)
+library(nycflights13)
 library(ggthemes)
 ```
 
@@ -2148,22 +2149,22 @@ q_plot <- ggplot(data = q_bind, mapping = aes(x = value)) +
 
 
 ## Data Wrangling: cces
-###
+### Exercise 1
 
 The `cces` data set, an acronym for "Cooperative Congressional Election Study," includes the presidential approval (and a bunch of demographic data) from over 450,000 individual Americans.
 
 Since this data set is so large, start by using `sample_n()` to return 10 random observations from `cces`.
 
 ```{r cces1, exercise = TRUE}
-cces
+
 ```
 
-###
+### Exercise 2
 
-Use `select()` and the `c()` function to remove the `news`, `econ`, `marstat`, and `approval_ch` variables.
+Use `select()` and the `c()` function to remove the `news`, `econ`, `marstat`, and `approval_ch` variables. Call this new dataset `cces_subset`. 
 
 ```{r cces2, exercise = TRUE}
-cces
+
 ```
 
 ```{r cces2-hint-1}
@@ -2175,760 +2176,316 @@ cces %>%
   select(-c(...))
 ```
 
-###
+### Exercise 3
 
-Use `filter()` to limit the data to the years 2009-2016 (to keep the approval data limited to a single president, Obama). Try to use the `%in%` operator to keep your code concise and clear.
+Use `filter()` to limit the data to the years 2009-2016 (to keep the approval data limited to a single president, Obama). Try to use the `%in%` operator to keep your code concise and clear. Don't forget to reassign this as `cces_subset`.
+
+```{r cces3-setup}
+cces_subset <- cces %>%
+  select(-c(news, econ, marstat, approval_ch))
+```
 
 ```{r cces3, exercise = TRUE}
-cces %>%
-  select(-c(news, econ, marstat, approval_ch))
+
 ```
 
 ```{r cces3-hint}
 # Remember that c(a:b) makes a vector from a to b. For example, c(1:10) makes a vector with the numbers from 1 to 10.
 ```
 
-###
+### Exercise 4
 
-Add a second parameter to the `filter` statement removing any observations with an `ideology` of "Not Sure" (this makes the trends in our data easier to detect).
+Call `filter` a second time and  remove any observations with an `ideology` of "Not Sure" (this makes the trends in our data easier to detect).
 
-```{r cces4, exercise = TRUE, exercise.lines = 4}
-cces %>%
+```{r cces4-setup}
+cces_subset <- cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016))
 ```
 
-###
+```{r cces4, exercise = TRUE, exercise.lines = 4}
+
+```
+ 
+### Exercise 5
 
 Now that `cces` is organized, our goal will be to plot the relationship between `race`, `ideology`, and `approval` of President Obama. Start by grouping the data by `race` and `ideology`.
-
-```{r cces5, exercise = TRUE, exercise.lines = 4}
-cces %>%
+```{r cces5-setup}
+cces_subset <- cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016), ideology != "Not Sure")
 ```
 
-###
+```{r cces5, exercise = TRUE, exercise.lines = 4}
+
+```
+
+### Exercise 6
 
 Use `summarize` to return a tibble with a new variable, `mean_approval`, that is equal to the average `approval` for each group. What goes wrong?
 
-```{r cces6, exercise = TRUE, exercise.lines = 5}
-cces %>%
+```{r cces6-setup}
+cces_subset <- cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
   group_by(race, ideology)
 ```
 
+```{r cces6, exercise = TRUE}
+
+```
+
 ```{r cces6-hint, eval = FALSE}
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(...))
+# Don't forget to use the mean() function within summarize()
 ```
 
-###
+### Exercise 7
 
-Almost all of our rows have an `NA` for `mean_approval`! This is because if any single row has an `NA` in our original table, the `mean()` function will return `NA`. To avoid this, change `mean()`'s `na.rm` argument so it removes values of `NA` before running.
+Almost all of our rows have an `NA` for `mean_approval`! This is because if any single row has an `NA` in our original table, the `mean()` function will return `NA`. To avoid this, take take the `mean()` again and set the `na.rm` argument to TRUE.
 
-```{r cces7, exercise = TRUE, exercise.lines = 6}
-cces %>%
+```{r cces7-setup}
+cces_subset <- cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval))
+  group_by(race, ideology)
 ```
 
-```{r cces7-hint, eval = FALSE}
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
+```{r cces7, exercise = TRUE}
+
+```
+
+```{r cces7-hint}
+cces_subset <- cces_subset %>%
   summarize(mean_approval = mean(approval, ...))
 ```
 
-###
+### Exercise 8
 
-Add a `ggplot()` call that makes a bar chart with `ideology` on the x-axis, `mean_approval` on the y-axis, and `race` as the fill aesthetic.
+Use `ggplot()` to ake a bar chart with `ideology` on the x-axis, `mean_approval` on the y-axis, and `race` as the fill aesthetic. Call this plot `cces_plot`. 
 
-```{r cces8, exercise = TRUE, exercise.lines = 6}
-cces %>%
+```{r cces8-setup}
+cces_subset <- cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
   group_by(race, ideology) %>%
   summarize(mean_approval = mean(approval, na.rm = TRUE))
 ```
 
+```{r cces8}
+
+```
+
 ```{r cces8-hint}
 # Remember to use geom_col() instead of geom_bar() when you map a variable to the y-axis.
 ```
 
-###
+### Exercise 9
 
-This stacked bar chart is a good start, but it's still pretty difficult to understand. Use the `position_dodge` function with `preserve` equal to "single" to make the graph clearer.
+This stacked bar chart is a good start, but it's still pretty difficult to understand. Use the `position_dodge` function with `preserve` equal to "single" to make the graph clearer. We've taken the liberty of removing the `geom_col()` in the previous question, so you can start fresh.
 
-```{r cces9, exercise = TRUE, exercise.lines = 8}
-cces %>%
+```{r cces9-setup}
+cces_subset <-  cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
   group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ggplot(mapping = aes(x = ideology, y = mean_approval, fill = race)) +
-    geom_col()
+  summarize(mean_approval = mean(approval, na.rm = TRUE))
+cces_plot  <- ggplot(data = cces_subset, mapping = aes(x = ideology, y = mean_approval, fill = race)) 
+```
+
+```{r cces9, exercise = TRUE, exercise.lines = 8}
+
 ```
 
 ```{r cces9-hint, eval = FALSE}
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ggplot(mapping = aes(x = ideology, y = mean_approval, fill = race)) +
-    geom_col(position = ...)
+cces_plot <- cces_plot + 
+  geom_col(position = ...)
 ```
 
-###
+### Exercise 10
 
-Bar charts are easier to read if they are increasing from left to right. Use an `fct_` function to reorder the chart based on each `ideology`'s `mean_approval`.
+Bar charts are easier to read if they are increasing from left to right. Use a `fct_` function to reorder the chart based on each `ideology`'s `mean_approval`. Call this new plot `cces_plot_2`. 
 
 <!-- Comment: technically there are separate mean_approval values for each race; is there any way to get around this (i.e. only sort by the values for one race?) Or would this just sort by the average of mean_approval? -->
-
-```{r cces10, exercise = TRUE, exercise.lines = 8}
-cces %>%
+```{r cces10-setup}
+cces_subset <-  cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
   group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ggplot(mapping = aes(x = ideology, y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
+  summarize(mean_approval = mean(approval, na.rm = TRUE))
+
+```
+
+```{r cces10, exercise = TRUE, exercise.lines = 8}
+
 ```
 
 ```{r cces10-hint}
 # Try using fct_reorder().
 ```
 
-###
+### Exercise 11
 
-Our graph is looking good, but the 8 separate races take up a lot of space and make it hard to read. Let's try to limit the graph to the 3 most common races in our data set. Start by making a new pipe that groups `cces` by `race`.
+Our graph is looking good, but the 8 separate races take up a lot of space and make it hard to read. Let's try to limit the graph to the 3 most common races in our data set. Start by making a new pipe that groups `cces` by `race`. Call this `cces_subset_2`.
 
 ```{r cces11, exercise = TRUE, exercise.lines = 10, eval = FALSE}
-cces %>%
-  ...
 
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
 ```
 
-###
+### Exercise 12
 
-Next, use `summarize()` on the top pipe to create a new variable, `num_ppl`, equal to the number of times each race occurs.
+Next, use `summarize()` on the to create a new variable in `cces_subset_2`, `num_ppl`, equal to the number of times each race occurs.
+```{r cces12-setup}
+cces_subset_2 <- cces %>%
+  group_by(race)
+```
 
 ```{r cces12, exercise = TRUE, exercise.lines = 11}
-cces %>%
-  group_by(race)
 
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
 ```
 
 ```{r cces12-hint}
 # Remember that the function n() counts the number of rows in each group.
 ```
 
-###
+### Exercise 13
 
-`arrange()` the summarized pipe by `num_ppl` in descending order.
+`arrange()` `cces_subset_2` by `num_ppl` in descending order.
 
-```{r cces12-13, exercise = TRUE, exercise.lines = 12}
-cces %>%
+```{r cces13-setup}
+cces_subset_2 <- cces %>%
   group_by(race) %>%
   summarize(num_ppl = n())
-
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
 ```
 
-```{r cces12-13-hint}
+```{r cces13, exercise = TRUE, exercise.lines = 12}
+
+```
+
+```{r cces13-hint}
 # Remember to incorporate desc() into your arrange() function.
 ```
 
-###
+### Exercise 14
 
-Finally, use `slice()` to keep the top 3 rows of the arranged pipe. Save the entire pipe to `most_common_races`.
-
-```{r cces13, exercise = TRUE, exercise.lines = 13}
-cces %>%
+Finally, use `slice()` to keep the top 3 rows of `cces_subset_2`..
+```{r cces14-setup}
+cces_subset_2 <- cces %>%
   group_by(race) %>%
   summarize(num_ppl = n()) %>%
   arrange(desc(num_ppl))
-
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
 ```
 
-```{r cces13-hint, eval = FALSE}
-most_common_races <- cces %>%
-  group_by(race) %>%
-  summarize(num_ppl = n()) %>%
-  arrange(desc(num_ppl)) %>%
-  slice(...)
+```{r cces14, exercise = TRUE}
 
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
 ```
 
-```{r most-common-races}
-most_common_races <- cces %>%
-  group_by(race) %>%
-  summarize(num_ppl = n()) %>%
-  arrange(desc(num_ppl)) %>%
-  slice(1:3)
-```
+### Exercise 15
 
-###
-
-Returning to our original pipe, use a filtering join before our `ggplot()` call so that only the races in `most_common_races` remain in the pipe.
-
-```{r cces14, exercise = TRUE, exercise.setup = "most-common-races", exercise.lines = 15}
-most_common_races <- cces %>%
+Returning to `cces_subset`, use a filtering join before our `ggplot()` call so that only the races in `cces_subset_2` remain.
+```{r cces15-setup}
+cces_subset_2 <- cces %>%
   group_by(race) %>%
   summarize(num_ppl = n()) %>%
   arrange(desc(num_ppl)) %>%
   slice(1:3)
 
-cces %>%
+cces_subset <- cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
   group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  ...
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
+  summarize(mean_approval = mean(approval, na.rm = TRUE))
 ```
 
-```{r cces14-hint-1}
-# Did you remember to use semi_join()?
-```
+```{r cces15, exercise = TRUE}
 
-```{r cces14-hint-2, eval = FALSE}
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  semi_join(..., by = ...)
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
-```
-
-###
-
-Our graph is starting to look good! To improve the aesthetics, add a `scale_` function to use RColorBrewer's "Dark2" palette to fill the bars.
-
-```{r cces15, exercise = TRUE, exercise.setup = "most-common-races", exercise.lines = 15}
-most_common_races <- cces %>%
-  group_by(race) %>%
-  summarize(num_ppl = n()) %>%
-  arrange(desc(num_ppl)) %>%
-  slice(1:3)
-
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  semi_join(most_common_races, by = "race") %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single"))
 ```
 
 ```{r cces15-hint-1}
-# Remember that because we want to change the fill aesthetic (and not the color aesthetic), we have to adjust the syntax of our scale_ function
+# Did you remember to use semi_join()?
 ```
 
-```{r cces15-hint-2, eval = FALSE}
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  semi_join(most_common_races, by = "race") %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single")) +
-    scale_fill_brewer(...)
+```{r cces15-hint-2}
+cces_subset <- cces_subset %>%
+  semi_join(..., by = ...)
 ```
 
-###
+### Exercise 16
 
-Great job! We can now clearly see the trend that more liberal Americans had a higher approval of President Obama. In addition, Black Americans gave Obama higher approval than Hispanic Americans, who, in turn, gave Obama higher approval than white Americans.
+Our graph is starting to look good! Now, create the same plot you had previously using the new data. Call this `cces_plot_2`. To improve the aesthetics, add a `scale_` function to use RColorBrewer's "Dark2" palette to fill the bars.
 
-To finish your plot, use `labs()` to change the x-axis label so it simply reads as "ideology." In addition, give the graph a title and subtitle of your choosing. 
-
-```{r cces16, exercise = TRUE, exercise.lines = 16, exercise.setup = "most-common-races"}
-most_common_races <- cces %>%
+```{r cces16-setup}
+cces_subset_2 <- cces %>%
   group_by(race) %>%
   summarize(num_ppl = n()) %>%
   arrange(desc(num_ppl)) %>%
   slice(1:3)
 
-cces %>%
+cces_subset <- cces %>%
   select(-c(news, econ, marstat, approval_ch)) %>%
   filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
   group_by(race, ideology) %>%
   summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  semi_join(most_common_races, by = "race") %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
+  semi_join(most_common_races, by = "race")
+```
+
+```{r cces16, exercise = TRUE}
+
+```
+
+```{r cces16-hint-1}
+# Remember that because we want to change the fill aesthetic (and not the color aesthetic), we have to adjust the syntax of our scale_ function
+```
+
+```{r cces16-hint-2, eval = FALSE}
+cces_plot_2 <- cces_plot_2 %>% +
+    scale_fill_brewer(...)
+```
+
+### Exercise 17
+
+We can now clearly see the trend that more liberal Americans had a higher approval of President Obama. In addition, Black Americans gave Obama higher approval than Hispanic Americans, who, in turn, gave Obama higher approval than white Americans.
+
+To finish your plot, use `labs()` to change the x-axis label so it simply reads as "ideology." In addition, give the graph a title and subtitle of your choosing. 
+```{r cces17-setup}
+cces_subset_2 <- cces %>%
+  group_by(race) %>%
+  summarize(num_ppl = n()) %>%
+  arrange(desc(num_ppl)) %>%
+  slice(1:3)
+
+cces_subset <- cces %>%
+  select(-c(news, econ, marstat, approval_ch)) %>%
+  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
+  group_by(race, ideology) %>%
+  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
+  semi_join(most_common_races, by = "race")
+
+cces_plot_2 <- ggplot(data = cces_subset, mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
     geom_col(position = position_dodge(preserve = "single")) +
     scale_fill_brewer(palette = "Dark2")
 ```
 
-```{r cces16-hint, eval = FALSE}
-cces %>%
-  select(-c(news, econ, marstat, approval_ch)) %>%
-  filter(year %in% c(2009:2016), ideology != "Not Sure") %>%
-  group_by(race, ideology) %>%
-  summarize(mean_approval = mean(approval, na.rm = TRUE)) %>%
-  semi_join(most_common_races, by = "race") %>%
-  ggplot(mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) +
-    geom_col(position = position_dodge(preserve = "single")) +
-    scale_fill_brewer(palette = "Dark2") +
+```{r cces17, exercise = TRUE}
+
+```
+
+```{r cces17-hint, eval = FALSE}
+cces_plot_2 +
     labs(...)
 ```
-
-
-
-
-
-
-
-
-
-## Data Wrangling: governors
-###
-
-The `governors` data set contains information about gubernatorial candidates in the United States from 1945 to 2012, including how they did in the election and how long they lived after the election (all of the candidates in the data set have died as of the year 2019).
-
-Start by simply typing `governors` in the code chunk below to see all of the different variables in the data set. Make sure to note the data types of the variables.
-
-```{r governors1, exercise = TRUE}
-
-```
-
-###
-
-Run `summary()` on governors.
-
-```{r governors2, exercise = TRUE}
-
-```
-
-###
-
-Our end goal is, among other things, to determine the impact of running *against* an incumbent in a gubernatorial race. However, there is no variable for this currently in the data set. To start, group `governors` by `year` and `state` (these two variables together determine each unique election).
-
-```{r governors3, exercise = TRUE}
-governors
-```
-
-###
-
-The dplyr `n_distinct()` function returns the number of distinct values in any column of a data set. Run the code below to see how we can use `n_distinct()` to calculate the number of gubernatorial elections per state in the `governors` data set.
-
-```{r governors3-4, exercise = TRUE, exercise.lines = 4}
-governors %>%
-  group_by(state) %>%
-  summarize(num_elections = n_distinct(year))
-```
-
-###
-
-Using `summarize()` and `n_distinct()`, create a new variable, `no_incumbent`, that returns `TRUE` if there is no incumbent in the race and `FALSE` otherwise. Note that there is no incumbent in the race if **both** of the following are true: the group has 1 distinct value of status, and the first value of status in the group is "Challenger."
-
-Save your completed pipe to `governor_incumbents`.
-
-```{r governors4, exercise = TRUE}
-governors %>%
-  group_by(year, state)
-```
-
-```{r governors4-hint-1}
-# Use n_distinct() to check if there is 1 distinct value of status in a given group. 
-```
-
-```{r governors4-hint-2}
-# The first value of status in each group is status[1].
-```
-
-###
-
-Next, use a mutating join to add the `no_incumbent` variable to the `governors` pipe below (we want to keep all of the other variables in `governors` as well).
-
-```{r governors5, exercise = TRUE, exercise.lines = 7, eval = FALSE}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  ...
-```
-
-```{r governors5-hint, eval = FALSE}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & .$status[1] == "Challenger"))
-
-governors %>%
-  left_join(...)
-```
-
-```{r governor-incumbents}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & .$status[1] == "Challenger"))
-```
-
-###
-
-Add to the bottom pipe by removing the variables `state`, `first_name`, `last_name`, `party`, and `sex` from the tibble.
-
-```{r governors6, exercise = TRUE, exercise.lines = 7, exercise.setup = "governor-incumbents"}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state"))
-```
-
-```{r governors6-hint}
-# Remember that select(-column_name) removes that column.
-```
-
-###
-
-Our next goal is to create a new variable for the age of each gubernatorial candidate at the time that they ran for office.
-
-To start, `mutate()` a new variable, `birth_date`, that calculates each candidate's date of birth by subtracting `alive_post` and `alive_pre` from the `died` variable (i.e. the variable representing the candidate's date of death).
-
-Remember that `alive_post` and `alive_pre` count the number of *days* that the candidate lived after and before the date of the election, so you'll have to use the lubridate `days()` function to convert `alive_post` and `alive_pre` into a period of time.
-
-```{r governors7, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 8}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex))
-```
-
-```{r governors7-hint}
-# days(alive_post + alive_pre) returns the total period of time that a candidate has been alive.
-```
-
-###
-
-Next, `mutate()` another variable, `age`, that is calculated by subtracting the candidate's year of birth from the year of the election.
-
-```{r governors8, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 9}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre))
-```
-
-```{r governors8-hint}
-# year(birth_date) returns the year of the candidate's birth date.
-```
-
-###
-
-Use `mutate()` again to create the variable `age_range`, equal to the candidate's `age` rounded down to a multiple of 5. To do this, subtract `age %% 5` from `age`.
-
-```{r governors9, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 10}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date))
-```
-
-###
-
-The dplyr `case_when()` function can be combined with `mutate()` and `as.factor()` to create a new factor in a tibble. Run the code below to see how we can use `case_when()` to categorize candidates into 3 categories based on their age and incumbency.
-
-```{r governors9-10, exercise = TRUE}
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(age_incumbency = as.factor(case_when(age <= 50 ~ "Young candidate",
-                                              age > 50 & status == "Challenger" ~ "Old challenger",
-                                              age > 50 & status == "Incumbent" ~ "Old incumbent")))
-```
-
-###
-
-Use `mutate()` one last time, along with `case_when()`, to create the `adv_status` variable. `adv_status` should be a **factor** with three levels: "Incumbent" if `status` is "Incumbent," "Incumbent challenger" if `status` is "Challenger *and* `no_incumbent` is false, and "Open-field challenger" if `no_incumbent` is true.
-
-```{r governors10, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 11}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5)
-```
-
-```{r governors10-hint-1}
-# Remember to use as.factor() before case_when().
-```
-
-```{r governors10-hint-2, eval = FALSE}
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(... ~ "Incumbent",
-                                          ... ~ "Incumbent challenger",
-                                          ... ~ "Open-field challenger")))
-```
-
-###
-
-Great job! Our next step is to calculate the average win margin for each `age_range` and `adv_status`. First, `group_by()` these two variables. Then, use `summarize()` to calculate `mean_win_margin`, the average win margin for each group.
-
-```{r governors11, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 14}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(status == "Incumbent" ~ "Incumbent",
-                                          no_incumbent == FALSE & status == "Challenger" ~ "Incumbent challenger",
-                                          no_incumbent == TRUE ~ "Open-field challenger")))
-```
-
-```{r governors11-hint, eval = FALSE}
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(status == "Incumbent" ~ "Incumbent",
-                                          no_incumbent == FALSE & status == "Challenger" ~ "Incumbent challenger",
-                                          no_incumbent == TRUE ~ "Open-field challenger"))) %>%
-  group_by(...) %>%
-  summarize(...)
-```
-
-###
-
-Add a `ggplot()` call that creates a bar chart with `age_range` on the x-axis and `mean_win_margin` on the y-axis.
-
-```{r governors12, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 16}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(status == "Incumbent" ~ "Incumbent",
-                                          no_incumbent == FALSE & status == "Challenger" ~ "Incumbent challenger",
-                                          no_incumbent == TRUE ~ "Open-field challenger"))) %>%
-  group_by(age_range, adv_status) %>%
-  summarize(mean_win_margin = mean(win_margin))
-```
-
-```{r governors12-hint}
-# Did you remember to use geom_col() instead of geom_bar()?
-```
-
-###
-
-This graph is really messy because each bar represents the `mean_win_margin` for all 3 `adv_status`es. Therefore, use `facet_wrap()` to facet the graph by `adv_status`.
-
-```{r governors13, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 18}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(status == "Incumbent" ~ "Incumbent",
-                                          no_incumbent == FALSE & status == "Challenger" ~ "Incumbent challenger",
-                                          no_incumbent == TRUE ~ "Open-field challenger"))) %>%
-  group_by(age_range, adv_status) %>%
-  summarize(mean_win_margin = mean(win_margin)) %>%
-  ggplot(mapping = aes(x = age_range, y = mean_win_margin)) +
-    geom_col()
-```
-
-```{r governors13-hint, eval = FALSE}
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(status == "Incumbent" ~ "Incumbent",
-                                          no_incumbent == FALSE & status == "Challenger" ~ "Incumbent challenger",
-                                          no_incumbent == TRUE ~ "Open-field challenger"))) %>%
-  group_by(age_range, adv_status) %>%
-  summarize(mean_win_margin = mean(win_margin)) %>%
-  ggplot(mapping = aes(x = age_range, y = mean_win_margin)) +
-    geom_col() +
-    facet_wrap(...)
-```
-
-###
-
-The graph is slightly difficult to read because there is no clear trend from left to right. Use an `fct_` function to reorder the three faceted graphs such that the graph with the lowest `mean_win_margin`s is on the left and the graph with the highest `mean_win_margin`s is on the right.
-
-```{r governors14, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 19}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(status == "Incumbent" ~ "Incumbent",
-                                          no_incumbent == FALSE & status == "Challenger" ~ "Incumbent challenger",
-                                          no_incumbent == TRUE ~ "Open-field challenger"))) %>%
-  group_by(age_range, adv_status) %>%
-  summarize(mean_win_margin = mean(win_margin)) %>%
-  ggplot(mapping = aes(x = age_range, y = mean_win_margin)) +
-    geom_col() +
-    facet_wrap(~ adv_status)
-```
-
-```{r governors14-hint}
-# Try using fct_reorder(...) to replace adv_status inside the facet_wrap() function.
-```
-
-###
-
-Amazing work! We can now easily see that incumbents have much higher win margins that open-field challengers, who, in turn, have much higher win margins than incumbent challengers. In addition, younger candidates seem to do better than older candidates on average.
-
-To finish your plot, use `labs()` to rename the x-axis label as "age" and to rename the y-axis label as "win margin." In addition, give the graph a title and subtitle of your choosing.
-
-```{r governors15, exercise = TRUE, exercise.setup = "governor-incumbents", exercise.lines = 19}
-governor_incumbents <- governors %>%
-  group_by(year, state) %>%
-  summarize(no_incumbent = (n_distinct(status) == 1 & status[1] == "Challenger"))
-
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(status == "Incumbent" ~ "Incumbent",
-                                          no_incumbent == FALSE & status == "Challenger" ~ "Incumbent challenger",
-                                          no_incumbent == TRUE ~ "Open-field challenger"))) %>%
-  group_by(age_range, adv_status) %>%
-  summarize(mean_win_margin = mean(win_margin)) %>%
-  ggplot(mapping = aes(x = age_range, y = mean_win_margin)) +
-    geom_col() +
-    facet_wrap(~ fct_reorder(adv_status, mean_win_margin))
-```
-
-```{r governors15-hint, eval = FALSE}
-governors %>%
-  left_join(governor_incumbents, by = c("year", "state")) %>%
-  select(-c(state, first_name, last_name, party, sex)) %>%
-  mutate(birth_date = died - days(alive_post + alive_pre)) %>%
-  mutate(age = year - year(birth_date)) %>%
-  mutate(age_range = age - age %% 5) %>%
-  mutate(adv_status = as.factor(case_when(status == "Incumbent" ~ "Incumbent",
-                                          no_incumbent == FALSE & status == "Challenger" ~ "Incumbent challenger",
-                                          no_incumbent == TRUE ~ "Open-field challenger"))) %>%
-  group_by(age_range, adv_status) %>%
-  summarize(mean_win_margin = mean(win_margin)) %>%
-  ggplot(mapping = aes(x = age_range, y = mean_win_margin)) +
-    geom_col() +
-    facet_wrap(~ fct_reorder(adv_status, mean_win_margin)) +
-    labs(...)
-```
-
-
-
-
-
-
-
 
 ## Data Wrangling: nes
-###
+### Exercise 1
 
 `nes`, short for "National Election Studies," contains the personal and political information of almost 40,000 American voters, as well as whether or not they voted in that year's presidential election.
 
-Start by running `skim()`, an updated version of `summary()`, on `nes`. See if you can figure out the first and last years in the data set.
+Start by running `skim()` on `nes`. See if you can figure out the first and last years in the data set.
 
 ```{r nes1, exercise = TRUE}
 
 ```
 
-###
+### Exercise 2
 
 Use `levels()` and the `$` operator to return the levels of the `education` variable. What are they?
 
@@ -2940,89 +2497,96 @@ Use `levels()` and the `$` operator to return the levels of the `education` vari
 # The factor that we'd like to investigate is nes$education.
 ```
 
-###
+### Exercise 3
 
-Start a pipe by selecting the `year`, `education`, `pres_appr`, and `voted` columns in `nes`.
+Select the `year`, `education`, `pres_appr`, and `voted` columns in `nes`. Call this `nes_subset`. 
 
 ```{r nes3, exercise = TRUE}
 nes
 ```
 
-###
+### Exercise 4
 
 Continue by filtering the tibble such that `education` is either "Some Highschool," "Highschool," "Some College," or "Adv. Degree."
+```{r nes4-setup}
+nes_subset <- nes %>%
+  nes %>%
+  select(c(year, education, pres_appr, voted))
+```
 
 ```{r nes4, exercise = TRUE}
-nes %>%
-  select(c(year, education, pres_appr, voted))
+
 ```
 
 ```{r nes4-hint}
 # Remember to use the %in% operator alongside the c() function.
 ```
 
-###
+### Exercise 5
 
 After filtering a factor, always remember that the *levels* of the factor have not been removed. To fix this, add a call to the pipe that drops (i.e. permanently removes) all deleted levels.
 
-```{r nes5, exercise = TRUE, exercise.lines = 4}
-nes %>%
+```{r nes5-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree"))
+```
+
+```{r nes5, exercise = TRUE}
+
 ```
 
 ```{r nes5-hint}
 # Use the droplevels() function.
 ```
 
-###
+### Exercise 6
 
 The dplyr `if_else()` function can be used alongside `mutate()` and `as.factor()` to create a factor with two levels depending on whether a certain `condition` is met. Run the code below to see how we can use `if_else()` to separate the `nes` data set into 2 groups based on whether the value of `ideology` is positive.
 
-```{r nes5-6, exercise = TRUE}
-nes %>%
+```{r nes6, exercise = TRUE}
   mutate(pos_ideology = as.factor(if_else(condition = ideology > 0,
                                           true = "ideology_is_positive",
                                           false = "ideology_not_positive")))
 ```
 
-###
+### Exercise 7
 
 Now, use `if_else()` to `mutate()` a new variable, `opinion`. `opinion` should be a **factor** that equals "has_opinion" if that person either approves *or* disapproves of the president, but "no_opinion" otherwise. To do this, use the `if_else()` function with the condition being detection of the pattern "prove" in the string `pres_appr`.
-
-```{r nes6, exercise = TRUE, exercise.lines = 5}
-nes %>%
+```{r nes7-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels()
 ```
 
-```{r nes6-hint-1}
+```{r nes7, exercise = TRUE, exercise.lines = 5}
+
+```
+
+```{r nes7-hint-1}
 # Remember to use as.factor() before if_else().
 ```
 
-```{r nes6-hint-2}
+```{r nes7-hint-2}
 # The function we want to use for the condition is str_detect().
 ```
 
-```{r nes6-hint-3, eval = FALSE}
-nes %>%
-  select(c(year, education, pres_appr, voted)) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
+```{r nes7-hint-3, eval = FALSE}
+nes_subset <- nes_subset %>%
   mutate(opinion = as.factor(if_else(condition = str_detect(...),
                                      true = ...,
                                      false = ...)))
 ```
 
-###
+### Exercise 8
 
 Our goal for the next few exercises will be to calculate voter turnout based on their education and whether or not they have an opinion of the president. 
 
 To start, group the tibble by `year`, `voted`, `opinion`, and `education`. Then, use `summarize()` to make a new variable, `count`, that simply counts the number of people (i.e. rows) in each group. What goes wrong?
 
-```{r nes7, exercise = TRUE, exercise.lines = 8}
-nes %>%
+```{r nes8-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3031,48 +2595,46 @@ nes %>%
                                      false = "no_opinion")))
 ```
 
-```{r nes7-hint}
+```{r nes8, exercise = TRUE}
+
+```
+
+```{r nes8-hint}
 # Remember that the n() function counts the number of rows in each group.
 ```
 
-###
+### Exercise 9
 
-If we look closely, many of our rows have a value of `NA` for either `voted` or `opinion`! Furthermore, `n()` doesn't have an `na.rm` argument. To remove the `NA`s, use tidyr's `drop_na()` before our `group_by()` call to remove all rows with an `NA` in the `voted` or `opinion` columns.
-
-```{r nes8, exercise = TRUE, exercise.lines = 11, eval = FALSE}
-nes %>%
+If we look closely, many of our rows have a value of `NA` for either `voted` or `opinion`! Furthermore, `n()` doesn't have an `na.rm` argument. To remove the `NA`s, use tidyr's `drop_na()` and then, call `group_by()` and `summarize()` again. 
+```{r nes9-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
   mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
                                      true = "has_opinion",
-                                     false = "no_opinion"))) %>%
-  ...
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n())
+                                     false = "no_opinion")))
 ```
 
-```{r nes8-hint, eval = FALSE}
-nes %>%
-  select(c(year, education, pres_appr, voted)) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>%
+```{r nes9, exercise = TRUE}
+
+```
+
+```{r nes9-hint, eval = FALSE}
+nes_subset <- nes_subset %>% 
   drop_na(...) %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n())
+  group_by(...) %>%
+  summarize(...)
 ```
 
-###
+### Exercise 10
 
 Our goal is to calculate voter turnout, the number of people who voted divided by the total number of people. Therefore, we want `Yes` and `No` (currently in the `voted` column) to be their own columns with the values that are currently in the `count` column.
 
 Use one of the `pivot_` functions to tidy our data in this way.
 
-```{r nes9, exercise = TRUE, exercise.lines = 11}
-nes %>%
+```{r nes10-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3084,30 +2646,24 @@ nes %>%
   summarize(count = n())
 ```
 
-```{r nes9-hint-1}
+```{r nes10, exercise = TRUE}
+
+```
+
+```{r nes10-hint-1}
 # Because we're making new columns from values, we want the pivot_wider() function.
 ```
 
-```{r nes9-hint-2, eval = FALSE}
-nes %>%
-  select(c(year, education, pres_appr, voted)) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
-  mmutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>%
-  drop_na(education, opinion) %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n()) %>%
+```{r nes10-hint-2, eval = FALSE}
+nes_subset <- nes_subset %>%
   pivot_wider(names_from = ..., values_from = ...)
 ```
 
-###
+### Exercise 11
 
 Great job! Now, to calculate turnout, simply `mutate()` another variable, `turnout`, equal to the number of people who voted (the number of `Yes`) divided by the total number of people.
-
-```{r nes10, exercise = TRUE, exercise.lines = 12}
-nes %>%
+```{r nes11-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3120,16 +2676,20 @@ nes %>%
   pivot_wider(names_from = voted, values_from = count)
 ```
 
-```{r nes10-hint}
+```{r nes11, exercise = TRUE}
+
+```
+
+```{r nes11-hint}
 # Remember that the total number of people in each group is (Yes + No).
 ```
 
-###
+### Exercise 12
 
-Next, add a `ggplot()` call to make a line graph that maps `year` to the x-axis, `turnout` to the y-axis, and `education` to both the color and linetype aesthetics.
+Next, use `ggplot()` named `nes_plot` to make a line graph that maps `year` to the x-axis, `turnout` to the y-axis, and `education` to both the color and linetype aesthetics.
 
-```{r nes11, exercise = TRUE, exercise.lines = 13}
-nes %>%
+```{r nes12-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3143,12 +2703,15 @@ nes %>%
   mutate(turnout = Yes / (Yes + No))
 ```
 
-###
+```{r nes12, exercise = TRUE}
+
+```
+
+### Exercise 13
 
 Use `facet_wrap` to facet the graph by opinion.
-
-```{r nes12, exercise = TRUE, exercise.lines = 15}
-nes %>%
+```{r nes13-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3160,34 +2723,24 @@ nes %>%
   summarize(count = n()) %>%
   pivot_wider(names_from = voted, values_from = count) %>%
   mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = education, linetype = education)) +
+nes_plot <- ggplot(data = nes_subset, mapping = aes(x = year, y = turnout, color = education, linetype = education)) +
     geom_line()
 ```
 
-```{r nes12-hint, eval = FALSE}
-nes %>%
-  select(c(year, education, pres_appr, voted)) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>%
-  drop_na(education, opinion) %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n()) %>%
-  pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = education, linetype = education)) +
-    geom_line() +
+```{r nes13, exercise = TRUE}
+
+```
+
+```{r nes13-hint, eval = FALSE}
+nes_plot <- nes_plot + 
     facet_wrap(...)
 ```
 
-###
+### Exercise 14
 
-This graph is starting to look pretty good, but the ordering of the legend is a bit confusing. Try using an `fct_` function to reorder the legend (both the color *and* linetype aesthetics) so that Adv. Degree is first, Some College is second, and so on. What goes wrong?
-
-```{r nes13, exercise = TRUE, exercise.lines = 16}
-nes %>%
+This graph is starting to look pretty good, but the ordering of the legend is a bit confusing. Try using an `fct_` function to reorder the legend (both the color *and* linetype aesthetics) so that Adv. Degree is first, Some College is second, and so on. What goes wrong? Call this plot `nes_plot_2`. 
+```{r nes14-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3198,18 +2751,24 @@ nes %>%
   group_by(year, voted, opinion, education) %>%
   summarize(count = n()) %>%
   pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = education, linetype = education)) +
-    geom_line() +
-    facet_wrap(~ opinion)
+  mutate(turnout = Yes / (Yes + No))
 ```
 
-```{r nes13-hint-1}
+```{r nes14, exercise = TRUE}
+
+```
+
+```{r nes14-hint-1}
 # Because this is a line graph, we want to use fct_reorder2().
 ```
 
-```{r nes13-hint-2, eval = FALSE}
-nes %>%
+
+### Exercise 15
+
+Although 3 of the 4 `education` statuses are reordered successfully, Adv. Degree is left on the bottom because it doesn't appear in the second graph. To fix this problem, change the `.fun` argument of both `fct_reorder2()` calls to first2 (the default is last2). Call this plot `nes_plot_3`. 
+
+```{r nes15-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3220,58 +2779,24 @@ nes %>%
   group_by(year, voted, opinion, education) %>%
   summarize(count = n()) %>%
   pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(...), linetype = fct_reorder2(...))) +
+  mutate(turnout = Yes / (Yes + No))
+```
+
+```{r nes15, exercise = TRUE}
+
+```
+
+```{r nes15-hint, eval = FALSE}
+nes_plot_3 <- ggplot(data = nes_subset, mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout, .fun = ...), linetype = fct_reorder2(education, year, turnout, .fun = ...))) +
     geom_line() +
     facet_wrap(~ opinion)
 ```
 
-###
-
-Although 3 of the 4 `education` statuses are reordered successfully, Adv. Degree is left on the bottom because it doesn't appear in the second graph. To fix this problem, change the `.fun` argument of both `fct_reorder2()` calls to first2 (the default is last2).
-
-```{r nes14, exercise = TRUE, exercise.lines = 16}
-nes %>%
-  select(c(year, education, pres_appr, voted)) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>%
-  drop_na(education, opinion) %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n()) %>%
-  pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout), linetype = fct_reorder2(education, year, turnout))) +
-    geom_line() +
-    facet_wrap(~ opinion)
-```
-
-```{r nes14-hint, eval = FALSE}
-nes %>%
-  select(c(year, education, pres_appr, voted)) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>%
-  drop_na(education, opinion) %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n()) %>%
-  pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout, .fun = ...), linetype = fct_reorder2(education, year, turnout, .fun = ...))) +
-    geom_line() +
-    facet_wrap(~ opinion)
-```
-
-###
+### Exercise 16
 
 Our graph is looking good, but the very long legend title takes up a lot of space. To fix this problem (and to improve the colors of the graph), add a `scale_color_brewer()` function with the "Spectral" palette as well as a `scale_linetype` function. Use **both** scale functions to set the name of the legend to "education."
-
-```{r nes15, exercise = TRUE, exercise.lines = 16}
-nes %>%
+```{r nes16-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3282,44 +2807,30 @@ nes %>%
   group_by(year, voted, opinion, education) %>%
   summarize(count = n()) %>%
   pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout, .fun = first2), linetype = fct_reorder2(education, year, turnout, .fun = first2))) +
+  mutate(turnout = Yes / (Yes + No)) 
+
+nes_plot_3 <- ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout, .fun = first2), linetype = fct_reorder2(education, year, turnout, .fun = first2))) +
     geom_line() +
     facet_wrap(~ opinion)
 ```
 
-```{r nes15-hint-1}
+```{r nes16, exercise = TRUE}
+
+```
+
+```{r nes16-hint-1}
 # The scale_color_brewer() function should take 2 arguments, but the scale_linetype() function should only take 1.
 ```
 
-```{r nes15-hint-2, eval = FALSE}
-nes %>%
-  select(c(year, education, pres_appr, voted)) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>%
-  drop_na(education, opinion) %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n()) %>%
-  pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout, .fun = first2), linetype = fct_reorder2(education, year, turnout, .fun = first2))) +
-    geom_line() +
-    facet_wrap(~ opinion) +
-    scale_color_brewer(..., name = ...) +
-    scale_linetype(name = ...)
-```
 
-###
+### Exercise 17
 
 Amazing work! From this graph, we see that Americans with a higher level of education tend to vote more often. Furthermore, Americans with an opinion of the president generally have higher voter turnout than Americans without an opinion of the president. Finally, pretty much 100% of Americans with an advanced decree are able to form an opinion of the president (this is why there is no Advanced Degree line in the no_opinion graph: there are too few data points in the table).
 
 To finish your plot, use `labs()` to give the graph a title and subtitle of your choosing.
 
-```{r nes16, exercise = TRUE, exercise.lines = 18}
-nes %>%
+```{r nes17-setup}
+nes_subset <- nes %>%
   select(c(year, education, pres_appr, voted)) %>%
   filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
   droplevels() %>%
@@ -3330,555 +2841,1428 @@ nes %>%
   group_by(year, voted, opinion, education) %>%
   summarize(count = n()) %>%
   pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout, .fun = first2), linetype = fct_reorder2(education, year, turnout, .fun = first2))) +
+  mutate(turnout = Yes / (Yes + No)) 
+
+nes_plot_3 <- ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout, .fun = first2), linetype = fct_reorder2(education, year, turnout, .fun = first2))) +
     geom_line() +
     facet_wrap(~ opinion) +
     scale_color_brewer(palette = "Spectral", name = "education") +
     scale_linetype(name = "education")
 ```
 
-```{r nes16-hint, eval = FALSE}
-nes %>%
-  select(c(year, education, pres_appr, voted)) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>%
-  drop_na(education, opinion) %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n()) %>%
-  pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year, y = turnout, color = fct_reorder2(education, year, turnout, .fun = first2), linetype = fct_reorder2(education, year, turnout, .fun = first2))) +
-    geom_line() +
-    facet_wrap(~ opinion) +
-    scale_color_brewer(palette = "Spectral", name = "education") +
-    scale_linetype(name = "education") +
-    labs(...)
-```
-
-
-
-
-
-
-
-
-
-
-
-
-## Data Wrangling: nominate
-###
-
-The `nominate` data set contains information about every single president and member of Congress since the beginning of the United States.
-
-`glimpse()` the `nominate` data set. What are the variables?
-
-```{r nominate1, exercise = TRUE}
+```{r nes17, exercise = TRUE, exercise.lines = 18}
 
 ```
 
-###
+<!-- Connor's Work --> 
+## Airline Safety 
 
-Our ultimate goal will be to plot the partisan proportion of Congress over time. To do so, however, we first need to calculate the total "population" of each Congressional chamber for each individual session of Congress.
+### Exercise 1 
 
-Start by grouping `nominate` by `chamber` and `congress`.
+We will be focusing on the data set `airline_saftey` from the `fivethirtyeight` package. Start by taking a `glimpse` of `airline_safety`:
 
-```{r nominate2, exercise = TRUE}
-nominate
+```{r as-1, exercise=TRUE}
+
 ```
 
-###
+### Exercise 2
 
-Next, use `summarize()` to make a new variable, `total_people`, that is equal to the number of observations (i.e. rows) in each group. Save the entire pipe as `congressional_population`.
+Do you notice anything off about the `airline_saftey` data? It's untidy! Over the next few questions, we are going to fix this. Let's start by using pivoting longer. Use `pivot_longer` to pivot the columns `incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14` and  `fatalities_85_99` into the two new columns "type_date" and "count". Call this `airline_tidy`
 
-```{r nominate3, exercise = TRUE}
-nominate %>%
-  group_by(chamber, congress)
+
+```{r as-2, exercise=TRUE}
+
 ```
 
-```{r nominate3-hint}
-# Remember that n() counts the number of rows in each group.
+```{r as-2-hint, eval=FALSE}
+airline_tidy <- airline_safety %>%     
+  pivot_longer(c(`...`, `...`, `...`,`...`, `...`, `...`), 
+        names_to = "...",values_to = "...")
 ```
 
-```{r congressional-population}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
+### Exercise 3
+
+Nice! Do you see what our next step has to be? In our `type_date` column, we have data on both the type of incident and the date range in which it occurred. This should really be two columns. Let's use the `separate()` to separate `type_date` into the two columns `type` and `date`. Separate on the s_ characters by setting the `sep` argument inside of `separate()` to "s_". 
+
+```{r as-4-setup}
+airline_tidy <- airline_safety %>%     
+  pivot_longer(c(`incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14`, `fatalities_85_99`), 
+        names_to = "type_date",values_to = "count")
 ```
 
-###
+```{r as-4, exercise=TRUE}
 
-Let's return to `nominate`. Start building your pipe by `filter()`ing out (i.e. removing) all of the rows with `chamber` equal to "President."
 
-```{r nominate4, exercise = TRUE, eval = FALSE, exercise.setup = "congressional-population", exercise.lines = 7}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  ...
 ```
 
-###
-
-Next, use `select()` to limit the pipe to the columns `congress`, `chamber`, and `party`.
-
-```{r nominate5, exercise = TRUE, exercise.lines = 7, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  filter(chamber != "President")
+```{r as-4-hint, eval=FALSE}
+airline_tidy <- airline_tidy %>%     
+   separate(type_date, c("...", "..."), sep = "...")
 ```
 
-###
+### Exercise 4
+Fantastic! Now that our data is tidy, we can get to work. `filter()` `airline_tidy` so that we narrow down our data set to data where date is "00_14", type is "incident", and count is greater than 0.
 
-Our next step is to count the number of members of congress by party. First, group the pipe by `chamber`, `congress`, and `party`. Then, use `summarize()` to create the `count_by_party` variable, which is simply a count of the number of observations in each group.
-
-```{r nominate6, exercise = TRUE, exercise.lines = 8, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party)
+```{r as-6-setup, include=FALSE}
+airline_tidy <- airline_safety %>%     
+  pivot_longer(c(`incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14`, `fatalities_85_99`), 
+        names_to = "type_date",values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_")
 ```
 
-```{r nominate6-hint-1}
-# Again, the n() function counts the number of rows in each group.
+```{r as-6, exercise=TRUE, exercise.lines=8}
+
 ```
 
-```{r nominate6-hint-2, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(...) %>%
-  summarize(...)
+### Exercise 5
+
+Nice! Now use `mutate()` to create the new variable `safety_value` and set it equal to `avail_seat_km_per_week` divided by `count`
+
+```{r as-7-setup}
+airline_tidy <- airline_safety %>%     
+  pivot_longer(c(`incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14`, `fatalities_85_99`), 
+        names_to = "type_date",values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14", count > 0)
 ```
 
-###
+```{r as-7, exercise=TRUE}
 
-To calculate the *proportion* of Congress held by each party, we need the total population of Congress that we calculated earlier. Use a mutating join to add the `total_people` variable from `congressional_population` to our pipe.
 
-```{r nominate7, exercise = TRUE, exercise.lines = 10, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n())
 ```
 
-```{r nominate7-hint-1}
-# The function that you want to use is left_join().
+### Exercise 6
+
+Nice! Now arrange `airline_tidy` by `safety_value`
+
+```{r as-8-setup}
+airline_tidy <- airline_safety %>%     
+  pivot_longer(c(`incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14`, `fatalities_85_99`), 
+        names_to = "type_date",values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14", count > 0) %>%
+  mutate(safety_value = avail_seat_km_per_week / count)
 ```
 
-```{r nominate7-hint-2, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(..., by = ...)
+```{r as-8, exercise=TRUE}
+
+
+
 ```
 
-###
+### Exercise 7
 
-Finally, use `mutate()` to create the variable `party_proportion`, which measures the proportion of Congress held by each party.
+Great! Let's now use our wrangled data to create a bar plot using `geom_col()` with `airline` on the x axis and `safety_value` on the y axis. Call it `as_plot`. 
 
-```{r nominate8, exercise = TRUE, exercise.lines = 11, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress"))
+```{r as-9-setup}
+airline_tidy <- airline_safety %>%     
+  pivot_longer(c(`incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14`, `fatalities_85_99`), 
+        names_to = "type_date",values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14", count > 0) %>%
+  mutate(safety_value = avail_seat_km_per_week / count) %>%
+  arrange(safety_value)
 ```
 
-```{r nominate8-hint}
-# party_proportion should be equal to count_by_party divided by total_people. 
+```{r as-9, exercise=TRUE, exercise.lines=10}
+
+
+
 ```
 
-###
+### Exercise 8
 
-Great work! Now that we have the proportion of Congress held by each party, we're going to calculate the greatest such proportion for each session of Congress. To do so, first group the pipe by `chamber` and `congress`.
+Awesome! As you can see, the airline names on the y axis are crowded and basically impossible to read. Let's change this by using theme() and setting the x axis text size to 5 and angle to 90.
 
-```{r nominate8-9, exercise.lines = 12, exercise = TRUE, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
+```{r as-10-setup}
+airline_tidy <- airline_safety %>%     
+  pivot_longer(c(`incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14`, `fatalities_85_99`), 
+        names_to = "type_date",values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14", count > 0) %>%
+  mutate(safety_value = avail_seat_km_per_week / count) %>%
+  arrange(safety_value)
 
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people)
+as_plot <- ggplot(data = airline_tidy, aes(x = airline, y = safety_value)) +
+  geom_col()
+
 ```
 
-###
+```{r as-10, exercise=TRUE}
 
-Use `summarize()` and `max()` to create three new variables. `top_party` should be the greatest proportion in each group, `other_parties` should be `1 - top_party`, and `congress_group` should be equal to `congress` rounded down to the nearest multiple of 5, i.e. `congress - congress %% 5` (this will make our graph easier to read at the end).
 
-```{r nominate9, exercise = TRUE, exercise.lines = 13, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
 
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress)
 ```
 
-```{r nominate9-hint-1}
-# max(some_variable) returns the greatest value of that variable in each group.
+```{r as-10-hint, eval=FALSE}
+as_plot <- as_plot +
+  theme(... = element_text(...,...))
+
 ```
 
-```{r nominate9-hint-2, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = ..., other_parties = ..., congress_group = ...)
+### Exercise 9
+Great! Now add some labels to finish our plot off!
+
+```{r as-11-setup}
+airline_tidy <- airline_safety %>%     
+  pivot_longer(c(`incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14`, `fatalities_85_99`), 
+        names_to = "type_date",values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14", count > 0) %>%
+  mutate(safety_value = avail_seat_km_per_week / count) %>%
+  arrange(safety_value)
+
+as_plot <- ggplot(data = airline_tidy, aes(x = airline, y = safety_value)) +
+  geom_col() + 
+  theme(axis.text = element_text(size = 5, angle = 90))
 ```
 
-###
+```{r as-11, exercise=TRUE, exercise.lines=10}
 
-We're going to use `group_by()` and `summarize()` one more time. This time, group by `chamber` and `congress_group`. Then, calculate the variables `mean_top_party` (equal to the average of `top_party` by group), and `mean_other_parties` (equal to `1 - mean_top_party`).
 
-```{r nominate10, exercise = TRUE, exercise.lines = 14, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
 
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5)
 ```
 
-```{r nominate10-hint, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(...) %>%
-  summarize(mean_top_party = ..., mean_other_parties = ...)
+## Partisan Lean District
+
+### Exercise 1
+
+We will be focusing on the data set `partisan_lean_district`, from the `fivethirtyeight` package. This data set includes the data which five thirty eight uses for their political projections.  Let's start by using the `skim()` function on `partisan_lean_district`
+
+```{r pld-1, exercise=TRUE, exercise.lines=10}
+
 ```
 
-###
+### Exercise 2
 
-Our data is no longer in a tidy format. Use a `pivot_` function to make two new columns: `party` (equal to either `mean_top_party` or `mean_other_parties`) and `proportion` (equal to the current value in one of those two columns).
+Great! Now `filter()` `partisan_lean_district` so that `pvi_party` equals R. Call this `pld_subset`. 
+```{r pld-2, exercise=TRUE}
 
-```{r nominate11, exercise = TRUE, exercise.lines = 16, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party)
 ```
 
-```{r nominate11-hint-1}
-# We're collapsing two column names into one, so use the pivot_longer() function.
+### Exercise 3
+
+Now select `pvi_amount` from `pld_subset`.
+
+```{r pld-3-setup}
+pld_subset <- partisan_lean_district %>% 
+  filter(pvi_party == "R")
 ```
 
-```{r nominate11-hint-2, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = ..., names_to = ..., values_to = ...)
+```{r pld-3, exercise=TRUE}
+
+
+
 ```
 
-###
 
-Use `mutate()` and `as.factor()` to convert the `party` variable into a factor.
+### Exercise 4
 
-```{r nominate12, exercise = TRUE, exercise.lines = 17, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion")
+Fantastic! Now use `summarize()` to calculate the mean and standard deviation of the `pvi_amount` column.
+```{r pld-4-setup}
+pld_subset <- partisan_lean_district %>% 
+  filter(pvi_party == "R") %>%
+  select(pvi_amount)
 ```
 
-```{r nominate12-hint, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = ...)
+```{r pld-4, exercise=TRUE, eval=FALSE}
+  
 ```
 
-###
-
-Use `ggplot()` to make a line graph with `congress_group` on the x-axis, `proportion` on the y-axis, and `party` mapped to both the color and linetype aesthetics.
-
-```{r nominate13, exercise = TRUE, exercise.lines = 18, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = as.factor(party))
+```{r pld-4-hint, eval=FALSE}
+pld_subset <- pld_subset %>%
+  summarize(mean = mean(...), std_dev = sd(...))
 ```
 
-###
+### Exercise 5
 
-Use `facet_wrap()` to facet our line graph by chamber.
+For these next few questions, we will be using `rnorm`. Start by using `rnorm` to create a set of 241 observations with a mean of 23.2 and a standard deviation of 14.5. 
 
-```{r nominate14, exercise = TRUE, exercise.lines = 20, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
+```{r pld-5-setup}
+pld_subset <- partisan_lean_district %>% 
+  filter(pvi_party == "R") %>%
+  select(pvi_amount) %>%
+  summarize(mean = mean(pvi_amount), std_dev = sd(pvi_amount))
+```
 
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = as.factor(party)) %>%
-  ggplot(mapping = aes(x = congress_group, y = proportion, color = party, linetype = party)) +
+```{r pld-5, exercise=TRUE, eval=FALSE}
+   
+
+
+```
+
+```{r pld-5-hint, eval=FALSE}
+rnorm(n = ..., mean = ..., sd = ...)
+```
+
+### Exercise 6
+
+Now use the `tibble()` function to turn our previous set of `rnorm()` observations into a data frame, and name this dataframe `pld_nd`
+
+```{r pld-6, exercise=TRUE, eval=FALSE, exercise.lines=10}
+
+
+```
+
+```{r pld-6-hint, eval=FALSE}
+...  <- ...(value = rnorm(n = ..., mean = ..., sd = ...))
+```
+
+### Exercise 7
+
+Awesome! Now use our newly made data frame `pld_nd` to make a histogram.Call it `nd_plot`.
+
+```{r pld-7-setup}
+pld_nd <- tibble(value = rnorm(n = 241, mean = 23.2, sd = 14.5))
+```
+
+```{r pld-7, exercise=TRUE, eval=FALSE}
+
+```
+
+```{r pld-7-hint, eval=FALSE}
+nd_plot <- ggplot(data = ..., aes(x = ...)) + 
+  geom_histogram()
+```
+
+### Exercise 8
+
+Now, remake the plot and set the `fill` argument  to "red", the `alpha` argument to .2, and the `bins` argument set to 10.
+```{r pld-8-setup}
+pld_nd <- tibble(value = rnorm(n = 241, mean = 23.2, sd = 14.5))
+```
+
+```{r pld-8, exercise=TRUE, eval=FALSE, exercise.lines=10}
+
+
+```
+
+```{r pld-8-hint}
+nd_plot <- ggplot(data = ..., aes(x = ...)) + 
+  geom_histogram(fill = ..., alpha = ..., bins = ...)
+```
+
+### Exercise 9
+
+Nice! Let's now make a histogram with our filtered `pld_subset` data from earlier. We've taken the liberty of removing the final `summarize()` function from `pld_subset`. Put `pvi_amount` on the x axis, and call this plot `pld_plot`. 
+
+```{r pld-9-setup}
+pld_subset <- partisan_lean_district %>% 
+  filter(pvi_party == "R") %>%
+  select(pvi_amount)
+```
+
+```{r pld-9, exercise=TRUE}
+
+
+```
+
+```{r pld-9-hint}
+pld_plot <- ggplot(data = ..., mapping = aes(x = ...)) + 
+  geom_histogram()
+```
+
+### Exercise 10
+
+Now set the `fill` argument to "blue", the `alpha` argument to 0.2,  and the `bins` argument to 10
+```{r pld-10-setup}
+pld_subset <- partisan_lean_district %>% 
+  filter(pvi_party == "R") %>%
+  arrange(pvi_amount)
+```
+
+```{r pld-10, exercise=TRUE, eval=FALSE, exercise.lines=10}
+
+
+```
+
+```{r pld-10-hint}
+pld_plot <- ggplot(data = ..., mapping = aes(x = ...)) + 
+  geom_histogram(fill = ..., alpha = ..., bins = ....)
+```
+
+
+## Media Mentions
+
+### Exercise
+
+We are going to be looking at two different data sets, `media_mentions_cable` (as the tutorial name implies), and `media_mentions_online`  both from the package `fivethirtyeight`. These two data sets include data on media mentions of different candidates in the 2020 elections. Throughout the tutorial, you will need to copy, paste and pipe your code from the previous question, as we will be taking consecutive steps to wrangle our data. Let's start by taking a glimpse of both `media_mentions_cable` and `media_mentions_online`.
+
+```{r mmc-1, exercise=TRUE}
+
+
+```
+
+### Exercise 2
+
+Great! Now use the `left_join` function to join the two data sets `media_mentions_cable` and `media_mentions_online` by `date` and `name`. Call this joined dataset `media_joined`
+```{r mmc-2, exercise=TRUE}
+
+
+```
+
+```{r mmc-2-hint, eval=FALSE}
+left_join(x = ..., y = ..., by = c("...", "..."))
+```
+
+### Exercise 3
+
+Now `select()` `date`, `name`, `matched_clips`, `all_candidate_clips`, `matched_stories` and `all_ candidate_stories`
+
+```{r mmc-3-setup}
+media_joined <- left_join(x = media_mentions_cable, 
+                          y = media_mentions_online, 
+                          by = c("date", "name"))
+```
+
+```{r mmc-3, exercise=TRUE, eval=FALSE, exercise.lines=6}
+
+
+```
+
+### Exercise 4
+
+Now use `mutate()` on our joined data create the new variable `matched_total` which is equal to `matched_clips` plus `matched_stories`
+
+```{r mmc-4-setup}
+media_joined <- left_join(x = media_mentions_cable, 
+                          y = media_mentions_online, 
+                          by = c("date", "name")) %>%
+  select(date, name, matched_clips, all_candidate_clips, matched_stores, all_candidate_stories)
+```
+
+```{r mmc-4, exercise=TRUE, eval=FALSE}
+
+
+```
+
+### Exercise 5
+
+Nice! Now use `mutate` again to create the new variable `all_candidate_total` which is equal to `all_candidate_clips` plus `all_candidate_stories`
+
+```{r mmc-5-setup}
+media_joined <- left_join(x = media_mentions_cable, 
+                          y = media_mentions_online, 
+                          by = c("date", "name")) %>%
+  select(date, name, matched_clips, all_candidate_clips, matched_stories, all_candidate_stories) %>%
+  mutate(matched_total = matched_stories + matched_clips)
+```
+
+```{r mmc-5, exercise=TRUE}
+
+
+```
+
+
+### Exercise 6
+
+Awesome! Now `filter()` `media_joined` to only include rows where `name` == "Julian Castro"
+```{r mmc-6-setup}
+media_joined <- left_join(x = media_mentions_cable, 
+                          y = media_mentions_online, 
+                          by = c("date", "name")) %>%
+  select(date, name, matched_clips, all_candidate_clips, matched_stories, all_candidate_stories) %>%
+  mutate(matched_total = matched_stories + matched_clips) %>%
+  mutate(all_candidate_total = (all_candidate_clips + all_candidate_stories))
+```
+
+```{r mmc-6, exercise=TRUE, eval=FALSE, exercise.lines=8}
+
+
+```
+
+### Exercise 7
+
+Now, let's use our filtered version of `media_joined` to make a plot! Use `geom_line()` to create a line graph with `date` on the x axis and `total_matched` on the y axis. Call this graph `media_plot`.
+
+```{r mmc-7-setup}
+media_joined <- left_join(media_mentions_cable,media_mentions_online,c("date", "name")) %>%
+  mutate(total_matched = (matched_clips + matched_stories)) %>%
+  mutate(all_candidate_total = (all_candidate_clips + all_candidate_stories)) %>%
+  filter(name == "Julian Castro")
+```
+
+```{r mmc-7, exercise=TRUE}
+
+
+```
+
+```{r mmc-7-hint, eval=FALSE}
+media_plot <- ... %>%
+  ggplot(aes(x = , y = ...)) +
   geom_line()
 ```
 
+
+### Exercise 8
+
+Nice! As you can see, adding the second second geom changed our scale and made it harder to see trends in the first. For our final question, try changing the scale on the y axis to log base 10
+
+```{r mmc-8-setup}
+media_joined <- left_join(media_mentions_cable,media_mentions_online,c("date", "name")) %>%
+  mutate(total_matched = (matched_clips + matched_stories)) %>%
+  mutate(all_candidate_total = (all_candidate_clips + all_candidate_stories)) %>%
+  filter(name == "Julian Castro")
+
+media_plot <- media_joined %>%
+  ggplot(aes(x = date, y = total_matched)) +
+  geom_line()
+```
+
+```{r mmc-8, exercise=TRUE}
+
+
+```
+
+```{r mmc-8-hint, eval=FALSE}
+# Use scale_y_log10()
+  
+```
+
+## State Words
+
+### Exercise 1
+
+`state_words` is a data set from the `fivethirtyeight` package. The data set includes data on phrases repeated in speeches made by governors across the United States. Let's get started by using the `skim()` function on `state_words`
+
+```{r sw-1, exercise=TRUE}
+
+
+```
+
+### Exercise 2 
+
+Nice! Now `filter()` `state_words` to only include rows where `category` is NOT equal to "NA". Then use the assignment operator `<-` to name this filtered data set `state_words_1`
+
+```{r sw-2, exercise=TRUE}
+
+
+```
+
+### Exercise 3
+
+```{r sw-3-setup}
+state_words_1 <- state_words %>%
+  filter(category != "NA")
+```
+For the next few questions, we will be focusing on factors. Run the `levels()` function on the `category` factor of data set `state_words_1`.
+
+```{r sw-3, exercise=TRUE}
+
+
+```
+
+```{r sw-3-hint}
+# Consider using the $ operator.
+```
+
+### Exercise 4
+
+Now use the `count()` function on `category` to create a frequency table.
+
+```{r sw-4, exercise=TRUE, exercise.setup = "sw-3-setup"}
+
+
+```
+
+
+### Exercise 5
+
+Use `fct_reorder()` to reorder the factor levels in `state_words_1` by the mean of `d_speeches`. Then,  use the `levels()` function to take a look at what we have just done
+
+```{r sw-5, exercise=TRUE, exercise.setup = "sw-3-setup"}
+
+
+```
+
+```{r sw-5-hint, eval=FALSE}
+# Consider using the $ operator
+```
+
+### Exercise 6
+
+Great! Now try using `fct_recode()` to recode the layer "economy/fiscal issues" of the factor `category` in `state_words_1` to be "economic/fiscal". Then use the `levels()` function on `state_words_1` to take a look at what we have just done
+
+```{r sw-6, exercise=TRUE, exercise.setup = "sw-3-setup"}
+
+
+```
+
+### Exercise 7
+
+Let's now use our data to make a plot. (You won't need to use the previous two exercises for this plot). Use the data set `state_words_1` and `geom_col()` to make a bar graph with `category` on the x axis and `d_speeches` on the y axis. Call this plot `state_words_plot`.
+
+```{r sw-7, exercise=TRUE, eval=FALSE, exercise.setup = "sw-3-setup"}
+
+
+```
+
+### Exercise 8
+
+Great! Remember the practice we did on questions 5 and 6? It should come in handy now! Use `fct_recode()` to recode the `category` factor on our x axis so that the layer "economy/fiscal issues" becomes "economic/fiscal". Call this plot `state_plot_2`. 
+
+
+```{r sw-8, exercise=TRUE, eval=FALSE, exercise.setup = "sw-3-setup"}
+
+
+```
+
+```{r sw-8-hint, eval=FALSE}
+state_plot_2 <- state_words_1 %>%
+  ggplot(aes(x = (...  %>% fct_recode( ... = ...)) , y = d_speeches)) +
+      geom_col()
+```
+
+### Exercise 9
+
+Awesome! Let's add some labels and a title to finish off our plot! Add the labels "key phrase categories" and "speeches" to the x and y axes respectively, then add the title "Democratic Governor Talking Points"
+
+```{r sw-9-setup}
+state_words_1 <- state_words %>%
+  filter(category != "NA") 
+state_plot_2 <- state_words_1 %>%
+  ggplot(aes(x = (state_words_1$category  %>% fct_recode("economic/fiscal" = "economy/fiscal issues")) , y = d_speeches)) +
+      geom_col()
+```
+
+```{r sw-9, exercise=TRUE}
+
+
+```
+
+```{r sw-9-hint, eval=FALSE}
+# use labs()
+```
+
+## Mediacloud 
+
+### Exercise 1
+
+We are going to be looking at two different data sets, `mediacloud_hurricanes` and `mediacloud_states`  (both from the package `fivethirtyeight`). These two data sets include data on the number of sentences in online media which include mentions of key words related to hurricanes in 2017.  Let's start by using the skim function on both `mediacloud_hurricanes` and `mediacloud_states` to see what we are dealing with
+
+```{r mch-1, exercise=TRUE}
+
+```
+
+
+### Exercise 2
+
+Great! Let's get to work. Use `left_join()` to join `mediacloud_hurricanes` and `mediacloud_states` by `date`. 
+
+```{r mch-2, exercise=TRUE}
+
+```
+
+### Exercise 3
+
+Nice! Try using `right_join()` to join `mediacloud_hurricanes` and `mediacloud_states` by `date`. How does this change the tibble?
+
+```{r mch-3, exercise=TRUE}
+
+```
+
+
+### Exercise 4
+
+Cool! Now use the assignment operator `<-` to name our new left joined tibble `mediacloud_combined`. 
+
+```{r mch-4, exercise=TRUE}
+
+```
+
+### Exercise 5
+
+```{r mch-5-setup}
+mediacloud_combined <- left_join(mediacloud_hurricanes, mediacloud_states,"date")
+```
+
+Use `pivot_longer()` to pivot the columns `harvey`, `irma`, `maria`, `jose`, `texas`, `puerto_rico` and `florida` in `mediacloud_combined`. Put their names into a new column called "word" and their values into a new column called "mentions". 
+
+```{r mch-5, exercise=TRUE}
+
+```
+
+```{r mch-5-hint, eval=FALSE}
+mediacloud_combined %>% pivot_longer(..., names_to = "...", values_to = "...")
+```
+
+### Exercise 6
+
+Awesome! Now, just like we did when we joined, use the assignment operator `<-` to name our new pivoted tibble `mediacloud_combined_tidy`. 
+
+```{r mch-6, exercise=TRUE, exercise.setup = "mch-5-setup"}
+
+```
+
+
+### Exercise 7
+
+```{r mch-7-setup}
+mediacloud_combined <- left_join(mediacloud_hurricanes, mediacloud_states,"date")
+
+mediacloud_combined_tidy <- mediacloud_combined %>% pivot_longer(c(`harvey`, `irma`, `maria`, `jose`, `texas`, `puerto_rico`, `florida`), names_to = "word", values_to = "mentions")
+```
+
+Nice! Now, let's use our wrangled data to make a plot! Use `geom_line()` to make a line graph with `date` on the x axis and `mentions` on the y axis. Call this plot `mediacloud_plot`. 
+
+```{r mch-7, exercise=TRUE}
+
+```
+
+### Exercise 8
+
+Hmmm, that plot isn't very useful. Copy your code from the last question, and try setting the `color` aesthetic to `word`
+
+```{r mch-8-setup}
+mediacloud_combined <- left_join(mediacloud_hurricanes, mediacloud_states,"date")
+
+mediacloud_combined_tidy <- mediacloud_combined %>% pivot_longer(c(`harvey`, `irma`, `maria`, `jose`, `texas`, `puerto_rico`, `florida`), names_to = "word", values_to = "mentions")
+```
+
+
+```{r mch-8, exercise=TRUE}
+
+```
+
+```{r mch-8-hint, eval=FALSE}
+# Because color is an aesthetic, set it inside of aes()
+```
+
+### Exercise 9
+
+Much better! Let's finish up our plot by adding a title of your choice with a `labs()` layer.
+
+```{r mch-9-setup}
+mediacloud_combined <- left_join(mediacloud_hurricanes, mediacloud_states,"date")
+
+mediacloud_combined_tidy <- mediacloud_combined %>% pivot_longer(c(`harvey`, `irma`, `maria`, `jose`, `texas`, `puerto_rico`, `florida`), names_to = "word", values_to = "mentions")
+
+mediacloud_plot <- ggplot(data = mediacloud_combined_tidy, 
+                          aes(x = date, y = mentions, color = word)) +
+  geom_line()
+```
+
+```{r mch-9, exercise=TRUE}
+
+```
+
+## Unisex Names
+
+### Exercise 1
+
+We are going to be looking at `unisex_names`, a data set from the package `fivethirtyeight`, with data on the most popular unisex names. Let's start by taking a `glimpse()` of `unisex_names`
+
+```{r un-1, exercise=TRUE}
+
+  
+```
+
+### Exercise 2
+
+For the next few questions, we will be looking at  the variable `name` and practicing our string manipulation. Start by using the `str_subset()` function to create a vector containing only names that end in a "y"
+
+```{r un-2, exercise=TRUE}
+
+  
+```
+
+```{r un-2-hint-1}
+# Consider using the regex $
+```
+
+```{r un-2-hint-2}
+str_subset(..., pattern = "...")
+```
+
+```{r un-2-hint-3}
+str_subset(unisex_names$..., pattern = "...")
+```
+
+### Exercise 3
+
+Now try doing the same thing but for names that end with "ie"
+
+```{r un-3, exercise=TRUE}
+
+  
+```
+
+### Exercise 4
+
+Now use `str_sub` to create a vector with only the first three letters of each string in `name`
+
+```{r un-4, exercise=TRUE, eval=FALSE, exercise.lines=6}
+
+  
+```
+
+### Exercise 5
+
+Use `mutate()` to create a column `first_letter` that uses `str_sub` to take the first letter of every name in the `name` column. 
+
+```{r un-5, exercise=TRUE}
+
+```
+
+### Exercise 6
+
+Awesome! Now use the `<-` assignment operator to save this to the new data set `unisex_names_1`.
+
+```{r un-6, exercise=TRUE}
+
+  
+```
+
+### Exercise 7
+
+```{r un-7-setup}
+unisex_names_1 <- unisex_names %>% 
+  mutate(first_letter = str_sub(unisex_names$name, 1,1))
+```
+
+Now use `group_by()` and `summarize()` on `unisex_names_1` to create the variable `first_letter_avg`. Make `first_letter_avg` equal to the mean `total` of the names beginning with each `first_letter`[So the `first_letter_avg` for "C" should be the average number of living Americans (ie. the `total`) who have a specific name that starts with "C" which is included this data set. (This one is really confusing! Don't be afraid to look at the hint! Your resulting tibble should include two columns, one  being `first_letter_avg` and the other being `first_letter`.)]
+```{r un-7, exercise=TRUE}
+
+  
+```
+
+```{r un-7-hint-1}
+unisex_names_1 %>% 
+  group_by(...) %>% 
+  summarize(... = mean(...))
+```
+
+### Exercise 8
+
+Awesome! Now use the `<-` assignment operator to save this to the new data set `unisex_names_2`.
+
+```{r un-8, exercise=TRUE, eval=FALSE, exercise.lines=6}
+
+  
+```
+
+```{r un-8-hint, eval=FALSE}
+... <- unisex_names_1 %>%
+  group_by(first_letter) %>% 
+  summarize(mean = mean(total))
+```
+
+### Exercise 9
+
+```{r un-9-setup}
+unisex_names_2 <- unisex_names_1 %>%
+  group_by(first_letter) %>% 
+  summarize(mean = mean(total))
+```
+
+Let's use our data to make a plot. Use `unisex_names_2` and `geom_col()` to make a bar graph with `first_letter` on the x axis and `first_letter_avg` on the y axis
+
+```{r un-9, exercise=TRUE}
+
+```
+
+```{r un-9-hint, eval=FALSE}
+  
+```
+
+## Bad Drivers
+
+### Exercise 1
+
+Let's do some data wrangling with the `bad_drivers` tibble from the `fivethirtyeight` package! First `skim()` the `bad_driverse` dataset.
+
+```{r bd1, exercise=TRUE}
+
+```
+
+### Exercise 2
+
+Use `select()` to remove `num_drivers`, `insurance_premiums`, and `losses` from the tibble. We can do this using the `-` operator. Call this `bd_subset`. 
+
+```{r bd-2, exercise=TRUE}
+
+```
+
+### Exercise 3
+
+You may have noticed by looking at the tibble, Use `pivot_longer` on all of the columns except for the `state` column, and then set `names_to` `type` and `values_to` `percent`.
+
+
+```{r bd3-setup}
+bd_subset <- bad_drivers %>% select(-c(num_drivers, insurance_premiums, losses))
+```
+
+
+```{r bd3, exercise=TRUE}
+
+```
+
+### Exercise 4
+
+Now, we have a nice and tidy tibble. But we're not quite done yet. The first five characters in every value of our `type` column are `perc_`, which does nothing but clutter up our tibble.
+
+Let's use `mutate()` and `str_remove()` to get rid of it.
+
+```{r bd4-setup}
+bd_subset <- bad_drivers %>% select(-c(num_drivers, insurance_premiums, losses)) %>%
+  pivot_longer(cols = -state, names_to = "type", values_to = "percent")
+```
+
+```{r bd4, exercise=TRUE}
+
+```
+
+```{r bd4-hint}
+# `mutate` our `type` variable such that we `str_remove` the `pattern` = "perc_"
+```
+
+
+
+### Exercise 5
+
+Now, we have a neat and tidy tibble, that's much easier to manipulate. Let's say that now we want to find the 5 states that have the highest `percent` of fatal accidents linked to `alcohol`. `filter()` to choose only our rows where `type` == "alcohol".
+
+```{r bd5-setup}
+bd_subset <- bad_drivers %>% select(-c(num_drivers, insurance_premiums, losses)) %>%
+  pivot_longer(cols = -state, names_to = "type", values_to = "percent") %>%
+  mutate(type = str_remove(type, pattern = "perc_"))
+```
+
+```{r bd-5, exercise=TRUE}
+
+```
+
+### Exercise 6
+
+Use `arrange(desc())` to sort our values in descending order of `percent`.
+
+```{r bd6-setup}
+bd_subset <- bad_drivers %>% select(-c(num_drivers, insurance_premiums, losses)) %>%
+  pivot_longer(cols = -state, names_to = "type", values_to = "percent") %>%
+  mutate(type = str_remove(type, pattern = "perc_")) %>%
+  filter(type == "alcohol")
+```
+
+```{r bd6, exercise=TRUE}
+
+```
+
+### Exercise 7
+
+Use the `head()` function to select the first `5` rows of our tibble.
+
+```{r bd7-setup}
+bd_subset <- bad_drivers %>% select(-c(num_drivers, insurance_premiums, losses)) %>%
+  pivot_longer(cols = -state, names_to = "type", values_to = "percent") %>%
+  mutate(type = str_remove(type, pattern = "perc_")) %>%
+  filter(type == "alcohol") %>%
+  arrange(desc(percent))
+```
+
+```{r bd7, exercise = TRUE}
+
+```
+
+### Exercise 8
+
+Make a barplot using `ggplot()` and `geom_col()`. We'll map `x` to `state`, and y to `percent`. Call it `bd_plot`.
+
+```{r bd8-setup}
+bd_subset <- bad_drivers %>% select(-c(num_drivers, insurance_premiums, losses)) %>%
+  pivot_longer(cols = -state, names_to = "type", values_to = "percent") %>%
+  mutate(type = str_remove(type, pattern = "perc_")) %>%
+  filter(type == "alcohol") %>%
+  arrange(desc(percent)) %>%
+  head(5)
+```
+
+```{r bd8, exercise = TRUE}
+
+```
+
+### Exercise 9
+
+Title `bd_plot` "The Five States with the Highest Percent of Fatal Accidents from Alcohol", our x-axis "State", and our y-axis "Percent of Fatal Automobile Accidents from Alcohol".
+```{r bd9-setup}
+bd_subset <- bad_drivers %>% select(-c(num_drivers, insurance_premiums, losses)) %>%
+  pivot_longer(cols = -state, names_to = "type", values_to = "percent") %>%
+  mutate(type = str_remove(type, pattern = "perc_")) %>%
+  filter(type == "alcohol") %>%
+  arrange(desc(percent)) %>%
+  head(5)
+
+bd_plot <- ggplot(data = bd_subset, aes(x = state, y = percent), fill = state) + 
+  geom_col() + 
+  labs(title = "The Five States with the Highest Percent of Fatal Accidents from Alcohol",
+       x = "State",
+       y = "Percent of Fatal Automobile Accidents")
+```
+
+```{r bd9, exercise = TRUE}
+
+```
+
+## US_births_1994_2003
+
+### Exercise 1
+
+Let's do some data wrangling with the `US_births_1994_2003` tibble from the `fivthirtyeight` package. Use  `glimpse()` to get a good look at the tibble.
+
+```{r usb1, exercise = TRUE}
+
+```
+
+### Exercise 2
+
+Call on `US_births_1994_2003`, and `%>%` it into a `filter()` function. We will filter by `year` == "2000".  Call this `USB_2000`
+
+```{r usb2, exercise=TRUE}
+
+```
+
+### Exercise 3
+
+Run our filtered tibble into a `select()` function. Right now, our data is not tidy, and all the information in `month`, `date_of_month`, `year`, and `day_of_week` can be extrapolated from just `date`. We will remove the other columns to simplify our tibble. Let's select only the `date` and `births` columns.
+
+```{r usb3-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) 
+```
+
+```{r usb3, exercise=TRUE}
+
+```
+
+### Exercise 3
+
+Use `mutate(... = yday(...))` to create a new column for our tibble, `day_number` which will record the number of the day of year for each value in `date`.
+
+```{r usb3-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births)
+```
+
+```{r usb3, exercise=TRUE}
+
+```
+
+### Exercise 6
+ 
+Use `ggplot` and `geom_line()`, map x to `day_number` and y to `births`. Call this plot `births_plot`.
+
+```{r usb4-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births)
+```
+
+```{r usb4, exercise=TRUE}
+
+```
+
+### Exercise 5
+
+This plot is interesting, but it makes it clear that the relationship between number of births and day of the week is much greater than the relationship between number of births and the time of year. 
+
+So let's go back to the drawing board. Why don't we instead try to find the average number of births for each week, and then create a line plot from the resulting averages.
+
+Use `mutate(... = week(...))` to make a new column, `week_number` of `USB_2000`, that will record the number of the week of every value in `date`.
+
+```{r usb5-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births) %>% mutate(day_number = yday(date)) %>%
+  mutate(week_number = week(date))
+```
+
+```{r usb5, exercise=TRUE}
+
+```
+
+### Exercise 6
+
+Use `group_by()` to group our tibble's rows by `week_number`.
+
+```{r usb6-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births) %>% mutate(day_number = yday(date)) %>%
+  mutate(week_number = week(date)) %>%
+  group_by(week_number)
+```
+
+```{r usb6, exercise=TRUE}
+
+```
+
+### Exercise 7
+
+Now, use `summarize()` and the `mean()` function to make yet another variable, `avg_week_births`, that number of `births` across each week. 
+
+```{r usb6-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births) %>% mutate(day_number = yday(date)) %>%
+  mutate(week_number = week(date)) %>%
+  group_by(week_number) %>%
+  summarize(avg_week_births = mean(births))
+```
+
+```{r usb6, exercise=TRUE}
+
+```
+
+### Exercise 7
+
+Now, we're ready to make a plot again with `ggplot()` and `geom_line()`. Map x to `week_number`, and y to `avg_week_births`. Call this `births_plot_2`. 
+```{r usb7-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births) %>% mutate(day_number = yday(date)) %>%
+  mutate(week_number = week(date)) %>%
+  group_by(week_number) %>%
+  summarize(avg_week_births = mean(births))
+```
+
+```{r usb7, exercise=TRUE}
+
+```
+
+### Exercise 8
+
+Now, we can finish off our plot by adding a `labs()` layer. Title our plot "Average Daily Births by Week of the Year 2000", our x-axis "Week of the Year", and our y-axis "Average Daily Births".
+```{r usb8-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births) %>% mutate(day_number = yday(date)) %>%
+  mutate(week_number = week(date)) %>%
+  group_by(week_number) %>%
+  summarize(avg_week_births = mean(births))
+
+births_plot_2 <- ggplot(data = USB_2000, mapping = aes(x = week_number, y = avg_week_births)) +
+  geom_line()
+```
+
+```{r usb8, exercise=TRUE}
+
+```
+
+
+
+## Wrangling: daily_show_guests
+
+Let's do some data wrangling with the `daily_show_guests` tibble from the `fivethirtyeight` tibble. Run `library(fivethirtyeight)` to load up the `fivethirtyeight` package. Then, run `daily_show_guests` to get a run-down on the data in the tibble. Unlike many of the other tibbles we've worked with in this chapter, this one only contains 5 columns, so we don't need to use `glimpse()` or `skim()` to get a grasp of all the data.
+
+Let's say that our goal with this exercise is to create a list of a few fake names that are somewhat similar, but still different to the names of popular celebrities for parody purposes.
+
+Note that in this tutorial set, we will be working within a single pipe (`%>%`) chain. Feel free to copy and paste from question to question.
+
+```{r dw-5-1, exercise=TRUE, exercise.lines = 5}
+
+```
+
 ###
 
-It's very confusing that `mean_other_parties` is above `mean_top_party` in the legend but below `mean_top_party` on the graph. Use one of the `fct_` functions to reorder the `party` variable (in both the color *and* linetype aesthetics) by `congress_group` and `proportion`.
+Cool. Although we don't have a ton of columns, that doesn't we're done with them. If you notice, some of our columns have needlessly long and confusing names. 
+We can tackle this with `rename()`. Let's rename our columns such that `occupation` = `google_knowledge_occupation`, and `name` = `raw_guest_list`. Although this won't change anything about our data, it will make the tibble easier for us to work with.
 
-```{r nominate15, exercise = TRUE, exercise.lines = 21, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
+```{r dw-5-2, exercise=TRUE, exercise.lines = 5}
 
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = as.factor(party)) %>%
-  ggplot(mapping = aes(x = congress_group, y = proportion, color = party, linetype = party)) +
-  geom_line() +
-  facet_wrap(~ chamber)
-```
-
-```{r nominate15-hint-1}
-# Because this is a line graph, use the fct_reorder2() function.
-```
-
-```{r nominate15-hint-2, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = as.factor(party)) %>%
-  ggplot(mapping = aes(x = congress_group, y = proportion, color = fct_reorder2(...), linetype = fct_reorder2(...))) +
-  geom_line() +
-  facet_wrap(~ chamber)
 ```
 
 ###
 
-Finally, add two scale functions (`scale_color_discrete()` and `scale_linetype()`) to change the `name` of the legend to "party" and the `labels` of the legend to the vector `("largest party", "all other parties")`.
+Great! Now, let's get wrangling. Let's `filter()` our data, so that `occupation` == "actor" (we use the double = instead of single here, because we're using = as a comparative operator instead of an assignment operator). As you probably guessed, this will whittle down our datapoints to only actors.
 
-```{r nominate16, exercise = TRUE, exercise.lines = 21, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
+```{r dw-5-3, exercise=TRUE, exercise.lines = 5}
 
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = as.factor(party)) %>%
-  ggplot(mapping = aes(x = congress_group, y = proportion, color = fct_reorder2(party, congress_group, proportion), linetype = fct_reorder2(party, congress_group, proportion))) +
-  geom_line() +
-  facet_wrap(~ chamber)
-```
-
-```{r nominate16-hint, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = as.factor(party)) %>%
-  ggplot(mapping = aes(x = congress_group, y = proportion, color = fct_reorder2(party, congress_group, proportion), linetype = fct_reorder2(party, congress_group, proportion))) +
-  geom_line() +
-  facet_wrap(~ chamber) +
-  scale_color_discrete(...) +
-  scale_linetype(...)
 ```
 
 ###
 
-Fantastic job! The first thing to note is that the largest party always has a proportion greater than 0.5, which (unsurprisingly) implies that third-party candidates are practically nonexistent in the US political system. Next, the Senate has substantially more volatility than the House in the proportion of the chamber controlled by the largest party (can you think of a reason why?). Finally, the trend in both chambers seems to be towards a Congress with a more even distribution of representatives from the two major parties.
+Nicely done. Now, let's try using regex to filter down our data even further. In order to use string functions, which we will need to do to use regex, we will first need to turn our tibble into an atomic vector. But how can we do that? Well, let's begin by using `select()` to pick only the `name` column.
 
-To finish your plot, use `labs()` to give the graph a title and subtitle of your choice.
+```{r dw-5-4, exercise=TRUE, exercise.lines = 5}
 
-```{r nominate17, exercise = TRUE, exercise.lines = 23, exercise.setup = "congressional-population"}
-congressional_population <- nominate %>%
-  group_by(chamber, congress) %>%
-  summarize(total_people = n())
-
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = as.factor(party)) %>%
-  ggplot(mapping = aes(x = congress_group, y = proportion, color = fct_reorder2(party, congress_group, proportion), linetype = fct_reorder2(party, congress_group, proportion))) +
-  geom_line() +
-  facet_wrap(~ chamber) +
-  scale_color_discrete(name = "party", labels = c("largest party", "all other parties")) +
-  scale_linetype(name = "party", labels = c("largest party", "all other parties"))
 ```
 
-```{r nominate17-hint, eval = FALSE}
-nominate %>%
-  filter(chamber != "President") %>%
-  select(congress, chamber, party) %>%
-  group_by(chamber, congress, party) %>%
-  summarize(count_by_party = n()) %>%
-  left_join(congressional_population, by = c("chamber", "congress")) %>%
-  mutate(party_proportion = count_by_party / total_people) %>%
-  group_by(chamber, congress) %>%
-  summarize(top_party = max(party_proportion), other_parties = 1 - top_party, congress_group = congress - congress %% 5) %>%
-  group_by(chamber, congress_group) %>%
-  summarize(mean_top_party = mean(top_party), mean_other_parties = 1 - mean_top_party) %>%
-  pivot_longer(cols = c(mean_top_party, mean_other_parties), names_to = "party", values_to = "proportion") %>%
-  mutate(party = as.factor(party)) %>%
-  ggplot(mapping = aes(x = congress_group, y = proportion, color = fct_reorder2(party, congress_group, proportion), linetype = fct_reorder2(party, congress_group, proportion))) +
-  geom_line() +
-  facet_wrap(~ chamber) +
-  scale_color_discrete(name = "party", labels = c("largest party", "all other parties")) +
-  scale_linetype(name = "party", labels = c("largest party", "all other parties")) +
-  labs(...)
+###
+
+Good. Now, we can use the `deframe()` function to turn our one-row tibble into an atomic vector.
+
+```{r dw-5-5, exercise=TRUE, exercise.lines = 5}
+
 ```
+
+###
+
+Wonderful. Now, let's get regexing! 
+
+Use `str_subset(pattern = "")` to sort for every actor's name that begins with the letter `C`.
+
+```{r dw-5-6-hint, eval=FALSE}
+The `^` operator stands for "begins with" in regex. 
+```
+
+```{r dw-5-6, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Nice work. But as I'm sure you've noticed, we have quite a few duplicate names. Colin Firth alone shows up 7 times!
+
+We can remove these duplicates using the `unqiue()` function. Try it!
+
+```{r dw-5-7, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Much better. Now, let's go back to `str_subset()` to select only the names that contain an `r`, followed by any number of random characters before an `n`.
+
+```{r dw-5-8, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Good. Now, let's use `str_replace_all()` to change every capital letter in each name to the letter "P". This doesn't really accomplish anything productive, but I think it's kind of funny.
+
+```{r dw-5-9-hint, eval=FALSE}
+In regex, "[A-Z]" stands for every capital letter. ([a-z] and [0-9] also work in a similar way, in case you were wondering.)
+```
+
+```{r dw-5-9, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Very good. Now, let's use `str_remove()` to get remove the first "i" in each name. 
+
+Note that if we wanted to remove every "i", we could use `str_remove_all()`
+
+```{r dw-5-10, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Congratulations, you're finished. If you did everything right, your character vector should look a little something like this. We've definitely completed our goal of making fake names similar to popular celebrities. 
+
+```{r}
+daily_show_guests %>% 
+  filter(google_knowledge_occupation == "actor") %>% 
+  select(raw_guest_list) %>% 
+  rename(name = raw_guest_list) %>% 
+  deframe() %>% 
+  str_subset(pattern = "^C") %>% 
+  unique() %>% 
+  str_subset(pattern = "r.*n") %>% 
+  str_replace_all("P", pattern = "[A-Z]") %>% 
+  str_remove(pattern = "i")
+```
+
+## Wrangling: fandango
+
+Let's do some data wrangling with the `fandango` tibble from the `fivethirtyeight` package. Begin by running `libarary(fivethirtyeight)` to load up the package, and the run `glimpse()` on `fandango`, so we can get a grasp on all of its data.
+
+```{r dw-6-1, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Nice. Now, let's get rid of our `glimpse()` function - from here on out, we will be working within a single pipe (`%>%`) chain. Feel free to copy and paste from question to question.
+
+Let's begin by using `select()` to pick out the `film`, `fandango_stars`, `metacritic_norm_round`, `imdb_norm_round`, and `rt_norm_round` columns.
+
+```{r dw-6-2, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Cool. Now let's use `rename()` to tidy up our variable names. Make `fandango` = `fandango_stars`, `metacritic` = `metacritic_norm_round`, `imdb` = `imdb_norm_round` and `rotten_tomatoes` = `rt_norm_round`.
+
+```{r dw-6-3, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Good work. Now, let's use `mutate()` to make a new column, `avg`, that's equal to the average score across all four of our columns. Because we're not technically working with a vector, we can't use `summarise(mean())` without some major modifications to our tibble. We can, however, manually calculate an average within a `mutate()` function, by adding all four values together and then dividing the total by 4. 
+
+```{r dw-6-4, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Great. But let's say we want to make `avg` rounded to the nearest 0.5, like every other column. 
+
+This is actually a bit tricky, because the `round()` function in R will only round to the nearest decimal place. However, we can get around it using some clever arithmetic. Once again, we're using `mutate()` because we're making a vector from a vector.
+
+Change `avg` to be equal to `round()` of `avg * 2`, to `0` decimal places and then dividing the result by 2. (Setting the second argument of `round` to 0 rounds to the nearest integer, if you wish to round to a non-decimal power of 10, you can do so by setting your second argument to a negative number).
+
+```{r dw-6-5-hint, eval=FALSE}
+mutate(avg = round(..., ...)/2)
+```
+
+```{r dw-6-5, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Nice job. Now that we have all of our columns, we can make our data tidy using the `pivot_longer()` function. We're going to be using every column except for `film`, putting our variable names into a new column called `critic_website`, and our values into a new column called `score`.
+
+```{r dw-6-6-hint, eval=FALSE}
+... %>% pivot_longer(cols = -film, names_to = "...", values_to = "...")
+```
+
+```{r dw-6-6, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Nice. Now, let's use our tidy data to make a boxplot with `ggplot()` `geom_boxplot()` Map x to `critic_website` and y to `score`.
+
+```{r dw-6-8, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Well done. Now, let's add a scatterplot layer on top of our boxplot with `geom_jitter()` (`geom_point()` would lead to a lot of overplotting here!). While we're at it, let's also use `theme_classic()` to change the theme of our plot.
+
+```{r dw-6-9, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Good. Let's also add some labels with `labs()`. Title the plot "Average Movie Scores from Different Critic Websites", our x-axis "Critic Website", and our y-axis "Score (Out of 5)"
+
+```{r dw-6-10, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Congrats! You finished the tutorial set. If you did everything right, your plot should look a little something like this.
+
+```{r}
+fandango %>% 
+  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round) %>% 
+  rename(fandango = fandango_stars, metacritic = metacritic_norm_round, imdb = imdb_norm_round, rotten_tomatoes = rt_norm_round) %>% 
+  mutate(avg = (fandango + metacritic + imdb + rotten_tomatoes) / 4) %>% 
+  mutate(avg = round(avg * 2, 0)/2) %>% 
+  pivot_longer(cols = -film, names_to = "critic_website", values_to = "score") %>% 
+  ggplot(aes(x = critic_website, y = score)) +
+  geom_boxplot() + 
+  geom_jitter() + 
+  theme_classic() + 
+    labs(title = "Average Movie Scores from Different Critic Wesbites", 
+       x = "Critic Website", 
+       y = "Score (Out of 5)")
+```
+
+## Wrangling: foul_balls
+
+Let's do some data wrangling with the `foul_balls` tibble from the `fivethirtyeight` package. Begin by running `library(fivethrityeight)` and `library(skimr)` to call the respective packages, then run `skim(library)` so we can get a good grasp on the tibble.
+
+```{r dw-7-1, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Our first goal with this exercise will be to see and plot the amount of ground balls from month to month.
+
+Let's begin how we usually do. `select()` the `matchup`, `game_date`, `predicted_zone` and `type_of_hit` columns.
+
+```{r dw-7-2, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Very nice. Now, let's use `filter()` to select every row where `type_of_hit` == "Ground"
+
+```{r dw-7-3, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Good stuff. But let's say we didn't want to include any data from `predicted_zone` = 1. Well, we could use a filtering join, specifically, `anti_join()`.
+
+Hit run code on the block of code below to create a new tibble, `x`, equal to all the rows of data with `predicted_zone = 1`.
+
+
+```{r, include=FALSE}
+x <- foul_balls %>% filter(predicted_zone == 1)
+```
+
+```{r dw-7-4, exercise=TRUE, exercise.lines = 5}
+x <- foul_balls %>% filter(predicted_zone == 1)
+```
+
+###
+
+Nice, now, we can pipe our previous block of code into `anti_join(x)`, to filter out all the values in `x` from our tibble. Try it!
+
+```{r dw-7-5, exercise=TRUE, exercise.lines = 5}
+x <- foul_balls %>% filter(predicted_zone == 1)
+```
+
+###
+
+Good. Now, let's use `mutate()` and a lubridate function to make a new column, `date`, out of `game_date`. In this case, we will be using `ymd()`, because the dates are organized in the order `year, month, day`.
+
+If you've been astute you may have noticed that we don't actually need to do this, because the `game_date` column is already a date/time, but it is good practice for if any time in your data science futures you will have to deal with character dates.
+
+```{r dw-7-6, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Cool. Now, we can use `mutate()` yet again, along with the `month()` function on `date` to make a new column, which we'll call `game_month`.
+
+```{r dw-7-7, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Nice work. Now, let's use `group_by()` to group our data by `game_month`.
+
+```{r dw-7-8, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Great, now use `summarise()` to make a new column, `count`, equal to the `n()`, or number of rows, for each value of `game_month` in our tibble. This function does not require an argument in `n()`.
+
+```{r dw-7-9, exercise=TRUE, exercise.lines = 5}
+
+```
+
+###
+
+Very good. Now, we're ready to plot. Use `ggplot()` and `geom_line()` to make a line plot with x = `game_month` and y = `count`.
+
+```{r dw-7-10, exercise=TRUE, exercise.lines = 5}
+
+```
+
 
 ## Submit
 
