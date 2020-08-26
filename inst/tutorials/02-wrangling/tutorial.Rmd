@@ -711,11 +711,8 @@ nhanes_imperial <- nhanes %>%
 
 ```
 
-<<<<<<< HEAD
+
 ```{r nhanes3-hint, eval = FALSE}
-=======
-```{r nhanes3-hint}
->>>>>>> master
 nhanes_imperial <- nhanes_imperial %>%
   select(..., ..., ..., ...)
 ```
@@ -754,19 +751,12 @@ nhanes_imperial <- nhanes %>%
 
 ```
 
-<<<<<<< HEAD
+
 ```{r nhanes5-hint-1, eval = FALSE}
 # Remember to use geom_jitter().
 ```
 
 ```{r nhanes5-hint-2, eval = FALSE}
-=======
-```{r nhanes5-hint-1}
-# Remember to use geom_jitter().
-```
-
-```{r nhanes5-hint-2}
->>>>>>> master
 nhanes_plot <- ggplot(data = ..., aes(x = ..., y = ..., color = ...))
 ```
 
@@ -788,19 +778,12 @@ nhanes_plot <- ggplot(data = nhanes_imperial,
 
 ```
 
-<<<<<<< HEAD
+
 ```{r nhanes6-hint-1, eval = FALSE}
 # The se argument should be equal to FALSE.
 ```
 
 ```{r nhanes6-hint-2, eval = FALSE}
-=======
-```{r nhanes6-hint-1}
-# The se argument should be equal to FALSE.
-```
-
-```{r nhanes6-hint-2}
->>>>>>> master
 nhanes_plot <- nhanes_plot + 
   geom_smooth(se = ..., color = ...)
 ```
@@ -824,11 +807,7 @@ nhanes_plot <- ggplot(data = nhanes_imperial,
 
 ```
 
-<<<<<<< HEAD
 ```{r nhanes7-hint, eval = FALSE}
-=======
-```{r nhanes7-hint}
->>>>>>> master
 nhanes_plot <- nhanes_plot +
   facet_wrap(...)
 ```
@@ -855,11 +834,8 @@ nhanes_plot <- ggplot(data = nhanes_imperial,
 
 ```
 
-<<<<<<< HEAD
+
 ```{r nhanes8-hint, eval = FALSE}
-=======
-```{r nhanes8-hint}
->>>>>>> master
 nhanes_plot <- nhanes_plot +
   ...
 ```
@@ -909,11 +885,7 @@ PPBDS.data::kenya
 
 ```
 
-<<<<<<< HEAD
 ```{r kenya1-hint, eval = FALSE}
-=======
-```{r kenya1-hint}
->>>>>>> master
 glimpse(kenya)
 ```
 
@@ -946,20 +918,13 @@ PPBDS.data::kenya
 
 ```
 
-<<<<<<< HEAD
 ```{r kenya3-hint-1, eval = FALSE}
-=======
-```{r kenya3-hint-1}
->>>>>>> master
 ... <- kenya %>%
   filter(treatment %in% ...)
 ```
 
-<<<<<<< HEAD
+
 ```{r kenya3-hint-2, eval = FALSE}
-=======
-```{r kenya3-hint-2}
->>>>>>> master
 kenya_subset <- kenya %>%
   filter(treatment %in% c(...))
 ```
@@ -977,11 +942,7 @@ kenya_subset <- kenya %>%
 
 ```
 
-<<<<<<< HEAD
 ```{r kenya4-hint, eval = FALSE}
-=======
-```{r kenya4-hint}
->>>>>>> master
 kenya_subset <- kenya_subest %>%
   ...
 ```
@@ -1000,11 +961,7 @@ kenya_subset <- kenya %>%
 
 ```
 
-<<<<<<< HEAD
 ```{r kenya5-hint, eval = FALSE}
-=======
-```{r kenya5-hint}
->>>>>>> master
 kenya_subset <- kenya_subset %>%
   select(...)
 ```
@@ -1058,11 +1015,7 @@ kenya_subset <- kenya %>%
 
 ```
 
-<<<<<<< HEAD
 ```{r kenya8-hint, eval = FALSE}
-=======
-```{r kenya8-hint}
->>>>>>> master
 # ntile(mean_age, 2) will categorize age into the younger half and the older half.
 ```
 
@@ -1083,11 +1036,8 @@ kenya_subset <- kenya %>%
 
 ```
 
-<<<<<<< HEAD
+
 ```{r kenya9-hint, eval = FALSE}
-=======
-```{r kenya9-hint}
->>>>>>> master
 kenya_subset <- kenya_subset %>%
   group_by(...)
 ```
@@ -1134,20 +1084,12 @@ kenya_subset <- kenya %>%
 
 ```
 
-<<<<<<< HEAD
 ```{r kenya11-hint, eval = FALSE}
-=======
-```{r kenya11-hint}
->>>>>>> master
 kenya_plot <- ggplot(data = ..., aes(x = ..., y = ...)) +
   ...
 ```
 
-<<<<<<< HEAD
 ```{r kenya11-hint-2, eval = FALSE}
-=======
-```{r kenya11-hint-2}
->>>>>>> master
 # Remember to use geom_col() instead of geom_bar() when you map something to the y-axis.
 ```
 
@@ -1174,11 +1116,8 @@ kenya_plot <- ggplot(data = kenya_subset,
 
 ```
 
-<<<<<<< HEAD
+
 ```{r kenya12-hint, eval = FALSE}
-=======
-```{r kenya12-hint}
->>>>>>> master
 kenya_plot <- kenya_plot +
   facet_wrap(~ ...)
 ```
@@ -1231,11 +1170,8 @@ kenya_plot_2 <- ggplot(data = kenya_subset,
 
 ```
 
-<<<<<<< HEAD
+
 ```{r kenya14-hint, eval = FALSE}
-=======
-```{r kenya14-hint}
->>>>>>> master
 kenya_plot_2 <- kenya_plot_2 +
   ...
 ```
