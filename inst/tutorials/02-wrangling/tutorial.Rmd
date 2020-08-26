@@ -673,7 +673,7 @@ Use `pivot_wider()` to put `table2` into tidy format.
   pivot_wider(names_from = ..., values_from = ...)
 ```
 
-## Data Wrangling: nhanes
+## National Health and Nutrition Survey
 
 `nhanes` is a dataset included in the Five Thirty Eight data package. This dataset was referenced in Five Thirty Eight's article ["Don't Take Your] Vitamins" (https://fivethirtyeight.com/features/dont-take-your-vitamins/) and was take from the "National Health and Nutrition Examination Survey," which contains the personal and physical information of 10,000 Americans from two surveys in 2009 and 2011.
 
@@ -865,7 +865,7 @@ nhanes_plot +
   labs(title = ..., subtitle = ...)
 ```
 
-## Data Wrangling: kenya
+## Kenya Dataset
 
 The `kenya` data set (from the `PPBDS.data` package) records the data from a study in which poll stations in Kenya were assigned to either the control group or a group in which one or more methods were used to encourage voter registration (an SMS reminder, canvassing, etc.)
 
@@ -1199,7 +1199,7 @@ kenya_plot_2 +
     labs(...)
 ```
 
-## Data Wrangling: sps
+## Seguro Popular
 ### Exercise 1 
 
 The `sps` data set from the PPBDS.data pakcage contains information about a study done on a popular Mexican health insurance program, Seguro Popular. In the study, some Mexican health clusters were randomly "treated." The treatment consisted of encouragement for people in that health cluster to enroll in the health insurance program, as well as funds to improve health facilities in the cluster.
@@ -1474,7 +1474,7 @@ sps_plot_2 <- ggplot(data = sps_subset, mapping = aes(x = fct_reorder(education,
 
 ```
 
-## Data Wrangling: shaming
+## Shaming 
 
 ### Exercise 1
 
@@ -1807,7 +1807,7 @@ shaming_plot_2 <- ggplot(data = shaming_subset,
 
 ```
 
-## Data Wrangling: qscores
+## Q-Guide
 ### Exercise 1 
 
 The `qscores` data set includes information about 748 courses at Harvard during the 2018-2019 school year, including their department, student enrollment, average time spent on homework, and the average student rating of the course.
@@ -2148,7 +2148,7 @@ q_plot <- ggplot(data = q_bind, mapping = aes(x = value)) +
 ```
 
 
-## Data Wrangling: cces
+## CCES Dataset
 ### Exercise 1
 
 The `cces` data set, an acronym for "Cooperative Congressional Election Study," includes the presidential approval (and a bunch of demographic data) from over 450,000 individual Americans.
@@ -2474,7 +2474,7 @@ cces_plot_2 +
     labs(...)
 ```
 
-## Data Wrangling: nes
+## National Election
 ### Exercise 1
 
 `nes`, short for "National Election Studies," contains the personal and political information of almost 40,000 American voters, as well as whether or not they voted in that year's presidential election.
@@ -3833,23 +3833,9 @@ USB_2000 <- US_births_1994_2003 %>%
 
 ```
 
-### Exercise 3
+### Exercise 4
 
 Use `mutate(... = yday(...))` to create a new column for our tibble, `day_number` which will record the number of the day of year for each value in `date`.
-
-```{r usb3-setup}
-USB_2000 <- US_births_1994_2003 %>%
-  filter(year == 2000) %>%
-  select(date, births)
-```
-
-```{r usb3, exercise=TRUE}
-
-```
-
-### Exercise 6
- 
-Use `ggplot` and `geom_line()`, map x to `day_number` and y to `births`. Call this plot `births_plot`.
 
 ```{r usb4-setup}
 USB_2000 <- US_births_1994_2003 %>%
@@ -3862,18 +3848,13 @@ USB_2000 <- US_births_1994_2003 %>%
 ```
 
 ### Exercise 5
-
-This plot is interesting, but it makes it clear that the relationship between number of births and day of the week is much greater than the relationship between number of births and the time of year. 
-
-So let's go back to the drawing board. Why don't we instead try to find the average number of births for each week, and then create a line plot from the resulting averages.
-
-Use `mutate(... = week(...))` to make a new column, `week_number` of `USB_2000`, that will record the number of the week of every value in `date`.
+ 
+Use `ggplot` and `geom_line()`, map x to `day_number` and y to `births`. Call this plot `births_plot`.
 
 ```{r usb5-setup}
 USB_2000 <- US_births_1994_2003 %>%
   filter(year == 2000) %>%
-  select(date, births) %>% mutate(day_number = yday(date)) %>%
-  mutate(week_number = week(date))
+  select(date, births)
 ```
 
 ```{r usb5, exercise=TRUE}
@@ -3882,47 +3863,33 @@ USB_2000 <- US_births_1994_2003 %>%
 
 ### Exercise 6
 
+This plot is interesting, but it makes it clear that the relationship between number of births and day of the week is much greater than the relationship between number of births and the time of year. 
+
+So let's go back to the drawing board. Why don't we instead try to find the average number of births for each week, and then create a line plot from the resulting averages.
+
+Use `mutate(... = week(...))` to make a new column, `week_number` of `USB_2000`, that will record the number of the week of every value in `date`.
+
+```{r usb6-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births) %>% mutate(day_number = yday(date)) %>%
+  mutate(week_number = week(date))
+```
+
+```{r usb6, exercise=TRUE}
+
+```
+
+### Exercise 7
+
 Use `group_by()` to group our tibble's rows by `week_number`.
 
-```{r usb6-setup}
-USB_2000 <- US_births_1994_2003 %>%
-  filter(year == 2000) %>%
-  select(date, births) %>% mutate(day_number = yday(date)) %>%
-  mutate(week_number = week(date)) %>%
-  group_by(week_number)
-```
-
-```{r usb6, exercise=TRUE}
-
-```
-
-### Exercise 7
-
-Now, use `summarize()` and the `mean()` function to make yet another variable, `avg_week_births`, that number of `births` across each week. 
-
-```{r usb6-setup}
-USB_2000 <- US_births_1994_2003 %>%
-  filter(year == 2000) %>%
-  select(date, births) %>% mutate(day_number = yday(date)) %>%
-  mutate(week_number = week(date)) %>%
-  group_by(week_number) %>%
-  summarize(avg_week_births = mean(births))
-```
-
-```{r usb6, exercise=TRUE}
-
-```
-
-### Exercise 7
-
-Now, we're ready to make a plot again with `ggplot()` and `geom_line()`. Map x to `week_number`, and y to `avg_week_births`. Call this `births_plot_2`. 
 ```{r usb7-setup}
 USB_2000 <- US_births_1994_2003 %>%
   filter(year == 2000) %>%
   select(date, births) %>% mutate(day_number = yday(date)) %>%
   mutate(week_number = week(date)) %>%
-  group_by(week_number) %>%
-  summarize(avg_week_births = mean(births))
+  group_by(week_number)
 ```
 
 ```{r usb7, exercise=TRUE}
@@ -3931,8 +3898,41 @@ USB_2000 <- US_births_1994_2003 %>%
 
 ### Exercise 8
 
-Now, we can finish off our plot by adding a `labs()` layer. Title our plot "Average Daily Births by Week of the Year 2000", our x-axis "Week of the Year", and our y-axis "Average Daily Births".
+Now, use `summarize()` and the `mean()` function to make yet another variable, `avg_week_births`, that number of `births` across each week. 
+
 ```{r usb8-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births) %>% mutate(day_number = yday(date)) %>%
+  mutate(week_number = week(date)) %>%
+  group_by(week_number) %>%
+  summarize(avg_week_births = mean(births))
+```
+
+```{r usb8, exercise=TRUE}
+
+```
+
+### Exercise 9
+
+Now, we're ready to make a plot again with `ggplot()` and `geom_line()`. Map x to `week_number`, and y to `avg_week_births`. Call this `births_plot_2`. 
+```{r usb9-setup}
+USB_2000 <- US_births_1994_2003 %>%
+  filter(year == 2000) %>%
+  select(date, births) %>% mutate(day_number = yday(date)) %>%
+  mutate(week_number = week(date)) %>%
+  group_by(week_number) %>%
+  summarize(avg_week_births = mean(births))
+```
+
+```{r usb9, exercise=TRUE}
+
+```
+
+### Exercise 10
+
+Now, we can finish off our plot by adding a `labs()` layer. Title our plot "Average Daily Births by Week of the Year 2000", our x-axis "Week of the Year", and our y-axis "Average Daily Births".
+```{r usb10-setup}
 USB_2000 <- US_births_1994_2003 %>%
   filter(year == 2000) %>%
   select(date, births) %>% mutate(day_number = yday(date)) %>%
@@ -3944,323 +3944,315 @@ births_plot_2 <- ggplot(data = USB_2000, mapping = aes(x = week_number, y = avg_
   geom_line()
 ```
 
-```{r usb8, exercise=TRUE}
+```{r usb10, exercise=TRUE}
 
 ```
 
 ## Daily Show Guests
 
-Let's do some data wrangling with the `daily_show_guests` tibble from the `fivethirtyeight` tibble. Run `library(fivethirtyeight)` to load up the `fivethirtyeight` package. Then, run `daily_show_guests` to get a run-down on the data in the tibble. Unlike many of the other tibbles we've worked with in this chapter, this one only contains 5 columns, so we don't need to use `glimpse()` or `skim()` to get a grasp of all the data.
+### Exercise 1
+
+Let's do some data wrangling with the `daily_show_guests` tibble from the `fivethirtyeight` tibble. Run `daily_show_guests` to get a run-down on the data in the tibble. Unlike many of the other tibbles we've worked with in this chapter, this one only contains 5 columns, so we don't need to use `glimpse()` or `skim()` to get a grasp of all the data.
 
 Let's say that our goal with this exercise is to create a list of a few fake names that are somewhat similar, but still different to the names of popular celebrities for parody purposes.
 
-Note that in this tutorial set, we will be working within a single pipe (`%>%`) chain. Feel free to copy and paste from question to question.
-
-```{r dw-5-1, exercise=TRUE, exercise.lines = 5}
+```{r dsg1, exercise=TRUE}
 
 ```
 
-###
+### Exercise 2
 
-Cool. Although we don't have a ton of columns, that doesn't we're done with them. If you notice, some of our columns have needlessly long and confusing names. 
-We can tackle this with `rename()`. Let's rename our columns such that `occupation` = `google_knowledge_occupation`, and `name` = `raw_guest_list`. Although this won't change anything about our data, it will make the tibble easier for us to work with.
+If you notice, some of our columns have needlessly long and confusing names. 
+We can tackle this with `rename()`. Let's rename our columns such that `occupation` = `google_knowledge_occupation`, and `guest` = `raw_guest_list`. Although this won't change anything about our data, it will make the tibble easier for us to work with. Call this tibble `ds_guests`.
 
-```{r dw-5-2, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
-
-Great! Now, let's get wrangling. Let's `filter()` our data, so that `occupation` == "actor" (we use the double = instead of single here, because we're using = as a comparative operator instead of an assignment operator). As you probably guessed, this will whittle down our datapoints to only actors.
-
-```{r dw-5-3, exercise=TRUE, exercise.lines = 5}
+```{r dsg2, exercise=TRUE}
 
 ```
 
-###
+### Exercise 3
 
-Nicely done. Now, let's try using regex to filter down our data even further. In order to use string functions, which we will need to do to use regex, we will first need to turn our tibble into an atomic vector. But how can we do that? Well, let's begin by using `select()` to pick only the `name` column.
+Now, let's get wrangling. Let's `filter()` `ds_guests` our data to only contain guests whose `occupation` is "actor".
 
-```{r dw-5-4, exercise=TRUE, exercise.lines = 5}
+```{r dsg3-setup}
+ds_guests <- daily_show_guests %>%
+  rename("occupation" = google_knowledge_occupation,
+         "guest" = raw_guest_list)
+```
+
+```{r dsg3, exercise=TRUE}
 
 ```
 
-###
+### Exercise 4
 
-Good. Now, we can use the `deframe()` function to turn our one-row tibble into an atomic vector.
+Now, suppose you wanted to pick out all of the actors whose name starts with "C". Use the `$` operator and `str_subset()` on the `guest` column of `ds_guests`. Call this atomic vector `C_guests`.  
+```{r dsg4-setup}
+ds_guests <- daily_show_guests %>%
+  rename("occupation" = google_knowledge_occupation,
+         "guest" = raw_guest_list) %>%
+  filter(occupation == "actor")
+```
 
-```{r dw-5-5, exercise=TRUE, exercise.lines = 5}
+```{r dsg4, exercise = TRUE}
 
 ```
 
-###
-
-Wonderful. Now, let's get regexing! 
-
-Use `str_subset(pattern = "")` to sort for every actor's name that begins with the letter `C`.
-
-```{r dw-5-6-hint, eval=FALSE}
-The `^` operator stands for "begins with" in regex. 
+```{r dsg4-hint}
+# Consider using the regex ^ 
 ```
 
-```{r dw-5-6, exercise=TRUE, exercise.lines = 5}
+
+### Exercise 5
+
+But as I'm sure you've noticed, we have quite a few duplicate names. Colin Firth alone shows up 7 times!
+
+We can remove these duplicates using the `unique()` function. Try it on `C_guests`!
+
+
+```{r dsg5-setup}
+ds_guests <- daily_show_guests %>%
+  rename("occupation" = google_knowledge_occupation,
+         "guest" = raw_guest_list) %>%
+  filter(occupation == "actor") 
+
+C_guests <- str_subset(ds_guests$guest, pattern = "^C")
+```
+
+```{r dsg5, exercise=TRUE}
 
 ```
 
-###
-
-Nice work. But as I'm sure you've noticed, we have quite a few duplicate names. Colin Firth alone shows up 7 times!
-
-We can remove these duplicates using the `unqiue()` function. Try it!
-
-```{r dw-5-7, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
+### Exercise 6
 
 Much better. Now, let's go back to `str_subset()` to select only the names that contain an `r`, followed by any number of random characters before an `n`.
 
-```{r dw-5-8, exercise=TRUE, exercise.lines = 5}
+```{r dsg6-setup}
+ds_guests <- daily_show_guests %>%
+  rename("occupation" = google_knowledge_occupation,
+         "guest" = raw_guest_list) %>%
+  filter(occupation == "actor") 
+
+C_guests <- str_subset(ds_guests$guest, pattern = "^C") %>%
+  unique()
+```
+
+```{r dsg6, exercise=TRUE}
 
 ```
 
-###
-
-Good. Now, let's use `str_replace_all()` to change every capital letter in each name to the letter "P". This doesn't really accomplish anything productive, but I think it's kind of funny.
-
-```{r dw-5-9-hint, eval=FALSE}
-In regex, "[A-Z]" stands for every capital letter. ([a-z] and [0-9] also work in a similar way, in case you were wondering.)
+```{r dsg6-hint}
+# Consider using the regex `.*`
 ```
 
-```{r dw-5-9, exercise=TRUE, exercise.lines = 5}
+### Exercise 7
+
+Now, let's use `str_replace_all()` to change every capital letter in each name to the letter "P". This doesn't really accomplish anything productive, but I think it's kind of funny.
+
+```{r dsg7-setup}
+ds_guests <- daily_show_guests %>%
+  rename("occupation" = google_knowledge_occupation,
+         "guest" = raw_guest_list) %>%
+  filter(occupation == "actor") 
+
+C_guests <- str_subset(ds_guests$guest, pattern = "^C") %>%
+  unique() %>%
+  str_subset(., pattern = "r.*n")
+```
+
+```{r dsg7, exercise=TRUE}
 
 ```
 
-###
+```{r dsg7-hint}
+# Consider using the regex "[A-Z]" 
+```
 
-Very good. Now, let's use `str_remove()` to get remove the first "i" in each name. 
+### Exercise 8
+
+Let's use `str_remove()` to get remove the first "i" in each name. 
 
 Note that if we wanted to remove every "i", we could use `str_remove_all()`
 
-```{r dw-5-10, exercise=TRUE, exercise.lines = 5}
+```{r dsg8-setup}
+ds_guests <- daily_show_guests %>%
+  rename("occupation" = google_knowledge_occupation,
+         "guest" = raw_guest_list) %>%
+  filter(occupation == "actor") 
+
+C_guests <- str_subset(ds_guests$guest, pattern = "^C") %>%
+  unique() %>%
+  str_subset(., pattern = "r.*n") %>%
+  str_replace_all(., pattern = "[A-Z]", replacement = "P")
+```
+
+```{r dsg8, exercise=TRUE}
 
 ```
 
-###
+## Fandango
 
-Congratulations, you're finished. If you did everything right, your character vector should look a little something like this. We've definitely completed our goal of making fake names similar to popular celebrities. 
+### Exercise 1
 
-```{r}
-daily_show_guests %>% 
-  filter(google_knowledge_occupation == "actor") %>% 
-  select(raw_guest_list) %>% 
-  rename(name = raw_guest_list) %>% 
-  deframe() %>% 
-  str_subset(pattern = "^C") %>% 
-  unique() %>% 
-  str_subset(pattern = "r.*n") %>% 
-  str_replace_all("P", pattern = "[A-Z]") %>% 
-  str_remove(pattern = "i")
-```
+Let's do some data wrangling with the `fandango` tibble from the `fivethirtyeight` package. Run `glimpse()` on `fandango`, so we can get a grasp on all of its data.
 
-## Wrangling: fandango
-
-Let's do some data wrangling with the `fandango` tibble from the `fivethirtyeight` package. Begin by running `libarary(fivethirtyeight)` to load up the package, and the run `glimpse()` on `fandango`, so we can get a grasp on all of its data.
-
-```{r dw-6-1, exercise=TRUE, exercise.lines = 5}
+```{r fan1, exercise=TRUE}
 
 ```
 
-###
+### Exercise 2
 
-Nice. Now, let's get rid of our `glimpse()` function - from here on out, we will be working within a single pipe (`%>%`) chain. Feel free to copy and paste from question to question.
+Let's begin by using `select()` to pick out the `film`, `fandango_stars`, `metacritic_norm_round`, `imdb_norm_round`, and `rt_norm_round` columns. Call this new tibble `fan_subset`
 
-Let's begin by using `select()` to pick out the `film`, `fandango_stars`, `metacritic_norm_round`, `imdb_norm_round`, and `rt_norm_round` columns.
-
-```{r dw-6-2, exercise=TRUE, exercise.lines = 5}
+```{r fan2, exercise=TRUE}
 
 ```
 
-###
+### Exercise 3
 
-Cool. Now let's use `rename()` to tidy up our variable names. Make `fandango` = `fandango_stars`, `metacritic` = `metacritic_norm_round`, `imdb` = `imdb_norm_round` and `rotten_tomatoes` = `rt_norm_round`.
+Now let's use `rename()` to tidy up our variable names. Make `fandango` = `fandango_stars`, `metacritic` = `metacritic_norm_round`, `imdb` = `imdb_norm_round` and `rotten_tomatoes` = `rt_norm_round`.
+```{r fan3-setup}
+fan_subset <- fandango %>%
+  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round)
+```
 
-```{r dw-6-3, exercise=TRUE, exercise.lines = 5}
+```{r fan3, exercise=TRUE}
 
 ```
 
-###
+### Exercise 5
 
-Good work. Now, let's use `mutate()` to make a new column, `avg`, that's equal to the average score across all four of our columns. Because we're not technically working with a vector, we can't use `summarise(mean())` without some major modifications to our tibble. We can, however, manually calculate an average within a `mutate()` function, by adding all four values together and then dividing the total by 4. 
+Let's use `mutate()` to make a new column, `avg`, that's equal to the `mean()` score across all four of our columns (except for the `film` column). 
+```{r fan4-setup}
+fan_subset <- fandango %>%
+  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round) %>%
+  rename("fandango" = fandango_stars,
+         "metacritic" = metacritic_norm_round,
+         "imdb" = imdb_norm_round,
+         "rotten_tomatoes" = rt_norm_round)
+```
 
-```{r dw-6-4, exercise=TRUE, exercise.lines = 5}
+```{r fan4, exercise=TRUE}
 
 ```
 
-###
+### Exercise 5
 
-Great. But let's say we want to make `avg` rounded to the nearest 0.5, like every other column. 
+But let's say we want to make `avg` rounded to the nearest 0.5, like every other column. 
 
 This is actually a bit tricky, because the `round()` function in R will only round to the nearest decimal place. However, we can get around it using some clever arithmetic. Once again, we're using `mutate()` because we're making a vector from a vector.
 
-Change `avg` to be equal to `round()` of `avg * 2`, to `0` decimal places and then dividing the result by 2. (Setting the second argument of `round` to 0 rounds to the nearest integer, if you wish to round to a non-decimal power of 10, you can do so by setting your second argument to a negative number).
+Change `avg` to be equal to `round()` of `avg * 2`, to `0` decimal places (using the `digits` argument) and then dividing the result by 2.
 
-```{r dw-6-5-hint, eval=FALSE}
-mutate(avg = round(..., ...)/2)
+```{r fan5-setup}
+fan_subset <- fandango %>%
+  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round) %>%
+  rename("fandango" = fandango_stars,
+         "metacritic" = metacritic_norm_round,
+         "imdb" = imdb_norm_round,
+         "rotten_tomatoes" = rt_norm_round) %>%
+  mutate(avg = (fandango + metacritic + imdb + rotten_tomatoes) / 4)
 ```
 
-```{r dw-6-5, exercise=TRUE, exercise.lines = 5}
+```{r fan5, exercise=TRUE}
 
 ```
 
-###
+```{r fan5-hint}
+... <- fan_subset %>%
+  mutate(avg = round(x = ..., digits = ...)/2)
+```
 
-Nice job. Now that we have all of our columns, we can make our data tidy using the `pivot_longer()` function. We're going to be using every column except for `film`, putting our variable names into a new column called `critic_website`, and our values into a new column called `score`.
+### Exercise 6
 
-```{r dw-6-6-hint, eval=FALSE}
+Now that we have all of our columns, we can make our data tidy using the `pivot_longer()` function. We're going to be using every column except for `film`, putting our variable names into a new column called `critic_website`, and our values into a new column called `score`.
+
+```{r fan6-setup}
+fan_subset <- fandango %>%
+  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round) %>%
+  rename("fandango" = fandango_stars,
+         "metacritic" = metacritic_norm_round,
+         "imdb" = imdb_norm_round,
+         "rotten_tomatoes" = rt_norm_round) %>%
+  mutate(avg = (fandango + metacritic + imdb + rotten_tomatoes) / 4) %>%
+  mutate(avg = round(x = avg, digits = 2) / 2)
+```
+
+```{r fan6, exercise=TRUE}
+
+```
+
+```{r fan6-hint, eval=FALSE}
 ... %>% pivot_longer(cols = -film, names_to = "...", values_to = "...")
 ```
 
-```{r dw-6-6, exercise=TRUE, exercise.lines = 5}
+### Exercise 7
+
+Let's use our tidy data to make a boxplot with `ggplot()` `geom_boxplot()` Map x to `critic_website` and y to `score`. Call this plot `fan_plot`. 
+
+```{r fan7-setup}
+fan_subset <- fandango %>%
+  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round) %>%
+  rename("fandango" = fandango_stars,
+         "metacritic" = metacritic_norm_round,
+         "imdb" = imdb_norm_round,
+         "rotten_tomatoes" = rt_norm_round) %>%
+  mutate(avg = (fandango + metacritic + imdb + rotten_tomatoes) / 4) %>%
+  mutate(avg = round(x = avg, digits = 0) / 2) %>% 
+  pivot_longer(cols = -film, names_to = "critic_website", values_to = "score")
+```
+
+```{r fan7, exercise=TRUE}
 
 ```
 
-###
+### Exercise 8
 
-Nice. Now, let's use our tidy data to make a boxplot with `ggplot()` `geom_boxplot()` Map x to `critic_website` and y to `score`.
+Let's use `theme_classic()` to change the theme of our plot.
 
-```{r dw-6-8, exercise=TRUE, exercise.lines = 5}
+```{r fan8-setup}
+fan_subset <- fandango %>%
+  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round) %>%
+  rename("fandango" = fandango_stars,
+         "metacritic" = metacritic_norm_round,
+         "imdb" = imdb_norm_round,
+         "rotten_tomatoes" = rt_norm_round) %>%
+  mutate(avg = (fandango + metacritic + imdb + rotten_tomatoes) / 4) %>%
+  mutate(avg = round(x = avg, digits = 0) / 2) %>% 
+  pivot_longer(cols = -film, names_to = "critic_website", values_to = "score")
+
+fan_plot <- ggplot(data = fan_subset, 
+                   mapping = aes(x = critic_website, y = score)) + 
+  geom_boxplot()
+```
+
+```{r fan8, exercise=TRUE}
 
 ```
 
-###
-
-Well done. Now, let's add a scatterplot layer on top of our boxplot with `geom_jitter()` (`geom_point()` would lead to a lot of overplotting here!). While we're at it, let's also use `theme_classic()` to change the theme of our plot.
-
-```{r dw-6-9, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
+### Exercise 9
 
 Good. Let's also add some labels with `labs()`. Title the plot "Average Movie Scores from Different Critic Websites", our x-axis "Critic Website", and our y-axis "Score (Out of 5)"
 
-```{r dw-6-10, exercise=TRUE, exercise.lines = 5}
+```{r fan9-setup}
+fan_subset <- fandango %>%
+  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round) %>%
+  rename("fandango" = fandango_stars,
+         "metacritic" = metacritic_norm_round,
+         "imdb" = imdb_norm_round,
+         "rotten_tomatoes" = rt_norm_round) %>%
+  mutate(avg = (fandango + metacritic + imdb + rotten_tomatoes) / 4) %>%
+  mutate(avg = round(x = avg, digits = 0) / 2) %>% 
+  pivot_longer(cols = -film, names_to = "critic_website", values_to = "score")
 
+fan_plot <- ggplot(data = fan_subset, 
+                   mapping = aes(x = critic_website, y = score)) + 
+  geom_boxplot() +
+  theme_classic()
 ```
 
-###
-
-Congrats! You finished the tutorial set. If you did everything right, your plot should look a little something like this.
-
-```{r}
-fandango %>% 
-  select(film, fandango_stars, metacritic_norm_round, imdb_norm_round, rt_norm_round) %>% 
-  rename(fandango = fandango_stars, metacritic = metacritic_norm_round, imdb = imdb_norm_round, rotten_tomatoes = rt_norm_round) %>% 
-  mutate(avg = (fandango + metacritic + imdb + rotten_tomatoes) / 4) %>% 
-  mutate(avg = round(avg * 2, 0)/2) %>% 
-  pivot_longer(cols = -film, names_to = "critic_website", values_to = "score") %>% 
-  ggplot(aes(x = critic_website, y = score)) +
-  geom_boxplot() + 
-  geom_jitter() + 
-  theme_classic() + 
-    labs(title = "Average Movie Scores from Different Critic Wesbites", 
-       x = "Critic Website", 
-       y = "Score (Out of 5)")
-```
-
-## Wrangling: foul_balls
-
-Let's do some data wrangling with the `foul_balls` tibble from the `fivethirtyeight` package. Begin by running `library(fivethrityeight)` and `library(skimr)` to call the respective packages, then run `skim(library)` so we can get a good grasp on the tibble.
-
-```{r dw-7-1, exercise=TRUE, exercise.lines = 5}
+```{r fan9, exercise=TRUE}
 
 ```
-
-###
-
-Our first goal with this exercise will be to see and plot the amount of ground balls from month to month.
-
-Let's begin how we usually do. `select()` the `matchup`, `game_date`, `predicted_zone` and `type_of_hit` columns.
-
-```{r dw-7-2, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
-
-Very nice. Now, let's use `filter()` to select every row where `type_of_hit` == "Ground"
-
-```{r dw-7-3, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
-
-Good stuff. But let's say we didn't want to include any data from `predicted_zone` = 1. Well, we could use a filtering join, specifically, `anti_join()`.
-
-Hit run code on the block of code below to create a new tibble, `x`, equal to all the rows of data with `predicted_zone = 1`.
-
-
-```{r, include=FALSE}
-x <- foul_balls %>% filter(predicted_zone == 1)
-```
-
-```{r dw-7-4, exercise=TRUE, exercise.lines = 5}
-x <- foul_balls %>% filter(predicted_zone == 1)
-```
-
-###
-
-Nice, now, we can pipe our previous block of code into `anti_join(x)`, to filter out all the values in `x` from our tibble. Try it!
-
-```{r dw-7-5, exercise=TRUE, exercise.lines = 5}
-x <- foul_balls %>% filter(predicted_zone == 1)
-```
-
-###
-
-Good. Now, let's use `mutate()` and a lubridate function to make a new column, `date`, out of `game_date`. In this case, we will be using `ymd()`, because the dates are organized in the order `year, month, day`.
-
-If you've been astute you may have noticed that we don't actually need to do this, because the `game_date` column is already a date/time, but it is good practice for if any time in your data science futures you will have to deal with character dates.
-
-```{r dw-7-6, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
-
-Cool. Now, we can use `mutate()` yet again, along with the `month()` function on `date` to make a new column, which we'll call `game_month`.
-
-```{r dw-7-7, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
-
-Nice work. Now, let's use `group_by()` to group our data by `game_month`.
-
-```{r dw-7-8, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
-
-Great, now use `summarise()` to make a new column, `count`, equal to the `n()`, or number of rows, for each value of `game_month` in our tibble. This function does not require an argument in `n()`.
-
-```{r dw-7-9, exercise=TRUE, exercise.lines = 5}
-
-```
-
-###
-
-Very good. Now, we're ready to plot. Use `ggplot()` and `geom_line()` to make a line plot with x = `game_month` and y = `count`.
-
-```{r dw-7-10, exercise=TRUE, exercise.lines = 5}
-
-```
-
 
 ## Submit
 
