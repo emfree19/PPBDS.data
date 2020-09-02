@@ -1,5 +1,7 @@
 ---
 title: "Rubin Causal Model"
+tutorial:
+  id: "03-rubin-causal-model"
 output:
   learnr::tutorial:
       progressive: true
@@ -21,8 +23,7 @@ library(shiny)
 library(gt)
 library(PPBDS.data)
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
-options(tutorial.exercise.timelimit = 60)  
-# knitr::include_graphics("inst/tutorials/03-rubin-causal-model/images/don_rubin.jpg", dpi = 100)
+options(tutorial.exercise.timelimit = 60, tutorial.storage="local")  
 ```
 
 ## Introduction
@@ -862,11 +863,6 @@ question_text("If many of the observations were as high as Miro's, is it the pro
   )
 )
 
-```
-
-
-```{r echo=FALSE}
-knitr::include_graphics("images/don_rubin.jpg", dpi = 100)
 ```
 
 <!-- Copied set up from Jessica -->
