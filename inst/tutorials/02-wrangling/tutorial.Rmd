@@ -283,8 +283,104 @@ quiz(
 ## Factors 
 
 ## Lists
+### Exercise 1
+Now, let's move on to lists. This is section 2.4 in the textbook. First, we'd like you to create a list. Call this list `mylist` and let it have three items a, b, and c. Then, let a be a vector containing 1,2, and 3. Let b be a vector containing 4,5, and 6, and let c be a vector containing 7,8, and 9
+```{r lists-1, exercise=TRUE}
+
+```
+
+```{r lists-1-hint, eval=FALSE}
+# Consider using the c() function to create the individual vectors for a, b, and c
+
+# You could also use the : operator 
+```
+
+### Exercise 2
+
+Now, call `str()` on `mylist`. 
+
+```{r lists-2-setup}
+mylist <- list(a = c(1, 2, 3), b = c(4, 5, 6), c = c(7, 8, 9))
+```
+
+```{r lists-2, exercise=TRUE}
+
+```
+
+### Exercise 3
+
+Extract the sub-list containing b and c using `[`. 
+
+```{r lists-3-setup}
+mylist <- list(a = c(1, 2, 3), b = c(4, 5, 6), c = c(7, 8, 9))
+```
+
+```{r lists-3, exercise = TRUE}
+
+```
+
+### Exercise 4
+
+Now extract a single component a from `mylist`
+
+```{r lists-4-setup}
+mylist <- list(a = c(1, 2, 3), b = c(4, 5, 6), c = c(7, 8, 9))
+```
+
+```{r lists-4, exercise = TRUE}
+
+```
+
+```{r lists-4-hint-1, eval=FALSE}
+# Consider using [[]]
+```
+
+```{r lists-4-hint-2, eval=FALSE}
+# Within the brackets, you can either put the index of a or "a"
+```
+
+### Exercise 5
+
+Now, extract the number 5 from `mylist`.
+
+```{r lists-5-setup}
+mylist <- list(a = c(1, 2, 3), b = c(4, 5, 6), c = c(7, 8, 9))
+```
+
+```{r lists-5, exercise=TRUE}
+
+```
 
 ## Date-Times 
+### Exercise 1
+Run the `today()` and `now()` functions.
+```{r dttm-1, exercise=TRUE}
+
+```
+
+### Exercise 2
+
+Use functions such as `ymd()` or `mdy()` to convert the strings below into the proper date-time format. 
+```{r dttm-2, exercise=TRUE}
+date_1 <- "February 29, 2020"
+
+date_2 <- "29 February 2020"
+
+date_3 <- "2020-2-29"
+
+date_4 <- "2/29/2020 16:00:00 UTC"
+
+```
+
+### Exercise 3
+Use the `make_datetime()` function to create a date-time for Y2K. 
+```{r dttm-3, exercise=TRUE}
+
+```
+
+```{r dttm-3-hint}
+# The ideal output should be "2000-01-01 UTC"
+```
 
 ## Combining Data
 
