@@ -416,7 +416,7 @@ vehicles_plot <- ggplot(data = vehicles_fct, mapping = aes(x = class,
 
 ```
 
-```{r factors-6-hint}
+```{r factors-6-hint, eval = FALSE}
 # Look at the coord_flip() function
 ```
 
@@ -559,7 +559,7 @@ Use the `make_datetime()` function to create a date-time for Y2K.
 
 ```
 
-```{r dttm-3-hint}
+```{r dttm-3-hint, eval=FALSE}
 # The ideal output should be "2000-01-01 UTC"
 ```
 
@@ -950,11 +950,11 @@ You can use the `pivot_longer()` function in the **tidyr** package to convert wi
 
 ```
 
-```{r tidy-7-hint-1, echo=FALSE}
+```{r tidy-7-hint-1, eval=FALSE}
 # Consider using - to select the columns you want to pivot
 ```
 
-```{r tidy-7-hint-2, echo=FALSE}
+```{r tidy-7-hint-2, eval=FALSE}
 cases %>%
   pivot_longer(cols = ..., names_to = ..., values_to = ...)
 ```
@@ -994,7 +994,7 @@ You can "spread" the keys in a key column across their own set of columns with t
 
 ```
 
-```{r tidy-12-hint, echo=FALSE}
+```{r tidy-12-hint, eval=FALSE}
 ... %>% pivot_wider(names_from = ..., values_from = ..., names_prefix = ...)
 ```
 
@@ -1041,7 +1041,7 @@ But how can we plot this data? Our current iteration of `babynames` places the t
 
 ```
 
-```{r tidy-16-hint}
+```{r tidy-16-hint, eval=FALSE}
 babynames_wider <- babynames_wider %>%
   pivot_wider()
 ```
@@ -1655,11 +1655,11 @@ sps_subset <- sps %>%
 
 ```
 
-```{r sps3-hint-1}
+```{r sps3-hint-1, eval=FALSe}
 # Remember that select(-column_name) returns all columns except for that column.
 ```
 
-```{r sps3-hint-2}
+```{r sps3-hint-2, eval=FALSE}
 # Consider using c()
 ```
 
@@ -1693,7 +1693,7 @@ sps_subset <- sps %>%
 
 ```
 
-```{r sps5-hint}
+```{r sps5-hint, eval=FALSE}
 # Use the group_by() function.
 ```
 
@@ -1734,7 +1734,7 @@ sps_subset <- sps %>%
 
 ```
 
-```{r sps7-hint}
+```{r sps7-hint, eval=FALSE}
 # Remember to use geom_col() instead of geom_bar() when mapping a variable to the y-axis.
 ```
 
@@ -1758,7 +1758,7 @@ sps_plot <- ggplot(data = sps_subset, mapping = aes(x = education, y = mean_chan
 
 ```
 
-```{r sps8-hint}
+```{r sps8-hint,eval=FALSE}
 # You can use the position argument in the geom_col() layer
 ```
 
@@ -1779,7 +1779,7 @@ sps_subset <- sps %>%
 
 ```
 
-```{r sps9-hint}
+```{r sps9-hint, eval=FALSE}
 # We want to set our new variable to as.factor(treatment)
 ```
 
@@ -1801,7 +1801,7 @@ sps_subset <- sps %>%
 
 ```
 
-```{r sps10-hint}
+```{r sps10-hint, eval=FALSE}
 # Look at Question 13 of the Data Wrangling: Kenya section if you are confused 
 # about the fct_reorder() function 
 ```
@@ -1896,7 +1896,7 @@ Make the data set easier to visualize by limiting the columns to `treatment`, `p
 
 ```
 
-```{r shaming2-hint}
+```{r shaming2-hint, eval=FALSE}
 # Use the select() function.
 ```
 
@@ -1945,11 +1945,11 @@ shaming_subset <- shaming %>%
 
 ```
 
-```{r shaming5-hint-1}
+```{r shaming5-hint-1, eval=FALSE}
 # Remember to append the letter "L" to make something an integer; e.g. 22L.
 ```
 
-```{r shaming5-hint-2}
+```{r shaming5-hint-2, eval=FALSE}
 # The condition of the if_else() should be str_detect(primary_04, "Yes").
 ```
 
@@ -1970,7 +1970,7 @@ shaming_subset <- shaming %>%
 
 ```
 
-```{r shaming6-hint}
+```{r shaming6-hint, eval=FALSE}
 # Use the group_by() function.
 ```
 
@@ -1992,7 +1992,7 @@ shaming_subset <- shaming %>%
 
 ```
 
-```{r shaming7-hint}
+```{r shaming7-hint, eval=FALSE}
 # Remember that n() counts the number of rows in each group.
 ```
 
@@ -2015,7 +2015,7 @@ shaming_subset <- shaming %>%
 
 ```
 
-```{r shaming8-hint}
+```{r shaming8-hint, eval=FALSE}
 # The condition of the if_else() should be voted == 1.
 ```
 
@@ -2069,7 +2069,7 @@ shaming_subset <- shaming %>%
 
 ```
 
-```{r shaming10-hint}
+```{r shaming10-hint, eval=FALSE}
 # Note that the total number of people is equal to (did_vote + did_not_vote).
 ```
 
@@ -2096,7 +2096,7 @@ shaming_subset <- shaming %>%
 
 ```
 
-```{r shaming11-hint}
+```{r shaming11-hint, eval=FALSE}
 # Remember to use geom_col() instead of geom_bar() when you map something to the y-axis.
 ```
 
@@ -2258,7 +2258,7 @@ q_subset <- qscores %>%
 
 ```
 
-```{r qscores4-hint-1}
+```{r qscores4-hint-1, eval=FALSE}
 # The n() function returns the number of rows in each group.
 ```
 
@@ -2298,7 +2298,7 @@ q_subset <- qscores %>%
 
 ```
 
-```{r qscores6-hint}
+```{r qscores6-hint, eval=FALSE}
 # Remember that a:b returns all of the numbers from a to b. For example, 1:10 returns every number between 1 and 10.
 ```
 
@@ -2350,7 +2350,7 @@ Great work! Our next goal will be to create a new column with the homework value
 
 ```
 
-```{r qscores9-hint}
+```{r qscores9-hint, eval=FALSE}
 # Remember to use the %in% operator.
 ```
 
@@ -2507,7 +2507,7 @@ q_plot <- ggplot(data = q_bind, mapping = aes(x = value)) +
 
 ```
 
-```{r qscores15-hint}
+```{r qscores15-hint, eval=FALSE}
 # Remember that when using facet_grid(), the variable to the left of the "~" is the variable that will be used to facet the graph into rows.
 ```
 
@@ -2567,7 +2567,7 @@ Use `levels()` and the `$` operator to explore the levels of the `education` var
 
 ```
 
-```{r nes2-hint}
+```{r nes2-hint, eval=FALSE}
 # The factor that we'd like to investigate is nes$education.
 ```
 
@@ -2588,7 +2588,7 @@ Continue by filtering the tibble such that `education` is either "Some Highschoo
 
 ```
 
-```{r nes4-hint}
+```{r nes4-hint, eval=FALSE}
 # Remember to use the %in% operator alongside the c() function.
 ```
 
@@ -2601,7 +2601,7 @@ After filtering a factor, always remember that the *levels* of the factor have n
 
 ```
 
-```{r nes5-hint}
+```{r nes5-hint, eval=FALSE}
 # Use the droplevels() function.
 ```
 
@@ -2631,11 +2631,11 @@ Now, use `if_else()` to `mutate()` a new variable, `opinion`. `opinion` should b
 
 ```
 
-```{r nes7-hint-1}
+```{r nes7-hint-1, eval=FALSE}
 # Remember to use as.factor() before if_else().
 ```
 
-```{r nes7-hint-2}
+```{r nes7-hint-2, eval=FALSE}
 # The function we want to use for the condition is str_detect().
 ```
 
@@ -2661,7 +2661,7 @@ To start, group the tibble by `year`, `voted`, `opinion`, and `education`. Then,
 
 ```
 
-```{r nes8-hint}
+```{r nes8-hint, eval=FALSE}
 # Remember that the n() function counts the number of rows in each group.
 ```
 
@@ -2698,7 +2698,7 @@ Use one of the `pivot_` functions to tidy our data in this way.
 
 ```
 
-```{r nes10-hint-1}
+```{r nes10-hint-1, eval=FALSE}
 # Because we're making new columns from values, we want the pivot_wider() function.
 ```
 
@@ -2727,7 +2727,7 @@ nes %>%
 
 ```
 
-```{r nes11-hint}
+```{r nes11-hint, eval=FALSE}
 # Remember that the total number of people in each group is (Yes + No).
 ```
 
@@ -2759,7 +2759,7 @@ This graph is starting to look pretty good, but the ordering of the legend is a 
 
 ```
 
-```{r nes14-hint-1}
+```{r nes14-hint-1, eval=FALSE}
 # Because this is a line graph, we want to use fct_reorder2().
 ```
 
@@ -2794,7 +2794,7 @@ Our graph is looking good, but the very long legend title takes up a lot of spac
 
 ```
 
-```{r nes16-hint-1}
+```{r nes16-hint-1, eval=FALSE}
 # The scale_color_brewer() function should take 2 arguments, but the scale_linetype() function should only take 1.
 ```
 
@@ -3128,146 +3128,6 @@ pld_plot <- ggplot(data = ..., mapping = aes(x = ...)) +
   geom_histogram(fill = ..., alpha = ..., bins = ....)
 ```
 
-
-<!-- ## Media Mentions -->
-
-<!-- DK: More sloppiness. matched_stores does not seem to exist and yet is used in a join. -->
-
-<!-- ### Exercise -->
-
-<!-- We are going to be looking at two different data sets, `media_mentions_cable` (as the tutorial name implies), and `media_mentions_online`  both from the package `fivethirtyeight`. These two data sets include data on media mentions of different candidates in the 2020 elections. Throughout the tutorial, you will need to copy, paste and pipe your code from the previous question, as we will be taking consecutive steps to wrangle our data. Let's start by taking a glimpse of both `media_mentions_cable` and `media_mentions_online`. -->
-
-<!-- ```{r mmc-1, exercise=TRUE} -->
-
-
-<!-- ``` -->
-
-<!-- ### Exercise 2 -->
-
-<!-- Great! Now use the `left_join` function to join the two data sets `media_mentions_cable` and `media_mentions_online` by `date` and `name`. Call this joined dataset `media_joined` -->
-<!-- ```{r mmc-2, exercise=TRUE} -->
-
-
-<!-- ``` -->
-
-<!-- ```{r mmc-2-hint, eval=FALSE} -->
-<!-- left_join(x = ..., y = ..., by = c("...", "...")) -->
-<!-- ``` -->
-
-<!-- ### Exercise 3 -->
-
-<!-- Now `select()` `date`, `name`, `matched_clips`, `all_candidate_clips`, `matched_stories` and `all_ candidate_stories` -->
-
-<!-- ```{r mmc-3-setup} -->
-<!-- media_joined <- left_join(x = media_mentions_cable,  -->
-<!--                           y = media_mentions_online,  -->
-<!--                           by = c("date", "name")) -->
-<!-- ``` -->
-
-<!-- ```{r mmc-3, exercise=TRUE, eval=FALSE, exercise.lines=6} -->
-
-
-<!-- ``` -->
-
-<!-- ### Exercise 4 -->
-
-<!-- Now use `mutate()` on our joined data create the new variable `matched_total` which is equal to `matched_clips` plus `matched_stories` -->
-
-<!-- ```{r mmc-4-setup} -->
-<!-- media_joined <- left_join(x = media_mentions_cable,  -->
-<!--                           y = media_mentions_online,  -->
-<!--                           by = c("date", "name")) %>% -->
-<!--   select(date, name, matched_clips, all_candidate_clips, matched_stores, all_candidate_stories) -->
-<!-- ``` -->
-
-<!-- ```{r mmc-4, exercise=TRUE, eval=FALSE} -->
-
-
-<!-- ``` -->
-
-<!-- ### Exercise 5 -->
-
-<!-- Nice! Now use `mutate` again to create the new variable `all_candidate_total` which is equal to `all_candidate_clips` plus `all_candidate_stories` -->
-
-<!-- ```{r mmc-5-setup} -->
-<!-- media_joined <- left_join(x = media_mentions_cable,  -->
-<!--                           y = media_mentions_online,  -->
-<!--                           by = c("date", "name")) %>% -->
-<!--   select(date, name, matched_clips, all_candidate_clips, matched_stories, all_candidate_stories) %>% -->
-<!--   mutate(matched_total = matched_stories + matched_clips) -->
-<!-- ``` -->
-
-<!-- ```{r mmc-5, exercise=TRUE} -->
-
-
-<!-- ``` -->
-
-
-<!-- ### Exercise 6 -->
-
-<!-- Awesome! Now `filter()` `media_joined` to only include rows where `name` == "Julian Castro" -->
-<!-- ```{r mmc-6-setup} -->
-<!-- media_joined <- left_join(x = media_mentions_cable,  -->
-<!--                           y = media_mentions_online,  -->
-<!--                           by = c("date", "name")) %>% -->
-<!--   select(date, name, matched_clips, all_candidate_clips, matched_stories, all_candidate_stories) %>% -->
-<!--   mutate(matched_total = matched_stories + matched_clips) %>% -->
-<!--   mutate(all_candidate_total = (all_candidate_clips + all_candidate_stories)) -->
-<!-- ``` -->
-
-<!-- ```{r mmc-6, exercise=TRUE, eval=FALSE, exercise.lines=8} -->
-
-
-<!-- ``` -->
-
-<!-- ### Exercise 7 -->
-
-<!-- Now, let's use our filtered version of `media_joined` to make a plot! Use `geom_line()` to create a line graph with `date` on the x axis and `total_matched` on the y axis. Call this graph `media_plot`. -->
-
-<!-- ```{r mmc-7-setup} -->
-<!-- media_joined <- left_join(media_mentions_cable,media_mentions_online,c("date", "name")) %>% -->
-<!--   mutate(total_matched = (matched_clips + matched_stories)) %>% -->
-<!--   mutate(all_candidate_total = (all_candidate_clips + all_candidate_stories)) %>% -->
-<!--   filter(name == "Julian Castro") -->
-<!-- ``` -->
-
-<!-- ```{r mmc-7, exercise=TRUE} -->
-
-
-<!-- ``` -->
-
-<!-- ```{r mmc-7-hint, eval=FALSE} -->
-<!-- media_plot <- ... %>% -->
-<!--   ggplot(aes(x = , y = ...)) + -->
-<!--   geom_line() -->
-<!-- ``` -->
-
-
-<!-- ### Exercise 8 -->
-
-<!-- Nice! As you can see, adding the second second geom changed our scale and made it harder to see trends in the first. For our final question, try changing the scale on the y axis to log base 10 -->
-
-<!-- ```{r mmc-8-setup} -->
-<!-- media_joined <- left_join(media_mentions_cable,media_mentions_online,c("date", "name")) %>% -->
-<!--   mutate(total_matched = (matched_clips + matched_stories)) %>% -->
-<!--   mutate(all_candidate_total = (all_candidate_clips + all_candidate_stories)) %>% -->
-<!--   filter(name == "Julian Castro") -->
-
-<!-- media_plot <- media_joined %>% -->
-<!--   ggplot(aes(x = date, y = total_matched)) + -->
-<!--   geom_line() -->
-<!-- ``` -->
-
-<!-- ```{r mmc-8, exercise=TRUE} -->
-
-
-<!-- ``` -->
-
-<!-- ```{r mmc-8-hint, eval=FALSE} -->
-<!-- # Use scale_y_log10() -->
-
-<!-- ``` -->
-
 ## State Words
 
 ### Exercise 1
@@ -3301,7 +3161,7 @@ For the next few questions, we will be focusing on factors. Run the `levels()` f
 
 ```
 
-```{r sw-3-hint}
+```{r sw-3-hint, eval=FALSE}
 # Consider using the $ operator.
 ```
 
@@ -3515,7 +3375,7 @@ For the next few questions, we will be looking at  the variable `name` and pract
   
 ```
 
-```{r un-2-hint-1}
+```{r un-2-hint-1, eval=FALSE}
 # Consider using the regex $
 ```
 
@@ -3661,7 +3521,7 @@ bd_subset <- bad_drivers %>% select(-c(num_drivers, insurance_premiums, losses))
 
 ```
 
-```{r bd4-hint}
+```{r bd4-hint, eval=FALSE}
 # `mutate` our `type` variable such that we `str_remove` the `pattern` = "perc_"
 ```
 
@@ -3946,7 +3806,7 @@ ds_guests <- daily_show_guests %>%
 
 ```
 
-```{r dsg4-hint}
+```{r dsg4-hint, eval=FALSE}
 # Consider using the regex ^ 
 ```
 
@@ -3989,7 +3849,7 @@ C_guests <- str_subset(ds_guests$guest, pattern = "^C") %>%
 
 ```
 
-```{r dsg6-hint}
+```{r dsg6-hint, eval=FALSE}
 # Consider using the regex `.*`
 ```
 
@@ -4012,7 +3872,7 @@ C_guests <- str_subset(ds_guests$guest, pattern = "^C") %>%
 
 ```
 
-```{r dsg7-hint}
+```{r dsg7-hint, eval=FALSE}
 # Consider using the regex "[A-Z]" 
 ```
 
