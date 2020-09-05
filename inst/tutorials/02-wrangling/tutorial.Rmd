@@ -23,7 +23,6 @@ description: "Chapter 2 tutorial"
 
 <!-- Even if you need a special object called lexus_1998, just create once. -->
 
-
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(lubridate)
@@ -69,6 +68,30 @@ lexus_mileage <- vehicles %>%
   select(id, hwy, cty) %>%
   slice(3:9)
 
+# Tidy section setup
+library(babynames)
+cases <- tribble(
+  ~Country, ~"2011", ~"2012", ~"2013",
+      "FR",    7000,    6900,    7000,
+      "DE",    5800,    6000,    6200,
+      "US",   15000,   14000,   13000
+)
+cases2 <- tribble(
+  ~city, ~country,  ~continent,     ~"2011", ~"2012", ~"2013",
+  "Paris",    "FR", "Europe",           7000,    6900,    7000,
+  "Berlin",   "DE", "Europe",           5800,    6000,    6200,
+  "Chicago",  "US", "North America",   15000,   14000,   13000
+)
+pollution <- tribble(
+       ~city, ~size, ~amount,
+  "New York", "large",      23,
+  "New York", "small",      14,
+    "London", "large",      22,
+    "London", "small",      16,
+   "Beijing", "large",     121,
+   "Beijing", "small",     121
+)
+
 # Needed for later sections of the tutorial 
 library(fivethirtyeight)
 library(nycflights13)
@@ -87,7 +110,19 @@ question_text(
 )
 ```
 
+This tutorial uses the following libraries: 
+`library(fivethirtyeight)`
+`library(nycflights13)`
+`library(dslabs)`
+`library(fueleconomy)`
+`library(babynames)`
+`library(ggthemes)`
+If you have not installed these packages, you will like encounter issues when attempting the tutorial, so make sure to do so. If you don't remember how to do so, reference the `install.packages()` function introduced earlier in the course. 
+
+
 ## Characters 
+
+### Exercise 1
 Use `str_detect()` on `states` to find state that contain the pattern "ana":
 ```{r exercise-2-1, exercise=TRUE}
 
@@ -97,6 +132,7 @@ Use `str_detect()` on `states` to find state that contain the pattern "ana":
 str_detect(..., pattern = ...)
 ```
 
+### Exercise 2
 Now use `str_subset()` with `states` to find the names of the states that contain the pattern "ana" instead of just the boolean values: 
 ```{r exercise-2-2, exercise=TRUE}
 
@@ -106,6 +142,7 @@ Now use `str_subset()` with `states` to find the names of the states that contai
 str_subset(..., pattern = ...)
 ```
 
+### Exercise 3
 Use `str_subset()` to find `states` that have two a's in their name:
 ```{r exercise-2-3, exercise=TRUE}
 
@@ -119,6 +156,7 @@ Use `str_subset()` to find `states` that have two a's in their name:
 str_subset(..., pattern = ...)
 ```
 
+### Exercise 4
 `str_split()` `states` that are two or more words:
 ```{r exercise-2-4, exercise=TRUE}
 
@@ -128,6 +166,7 @@ str_subset(..., pattern = ...)
 str_split(..., pattern = ...)
 ```
 
+### Exercise 5
 `str_split_fixed()` `states` into two words. What will happen to `District of Columbia`?
 ```{r exercise-2-5, exercise=TRUE}
 
@@ -137,6 +176,7 @@ str_split(..., pattern = ...)
 str_split_fixed(..., pattern = ..., n = ...)
 ```
 
+### Exercise 6
 Collapse `states` using `str_c()`, and separate them with a comma.
 ```{r exercise-2-6, exercise=TRUE}
 
@@ -146,6 +186,7 @@ Collapse `states` using `str_c()`, and separate them with a comma.
 str_c(states, collapse = ",")
 ```
 
+### Exercise 7
 Use `str_c` to collapse states into the form `state1 & state2`. Combine the first 1-25 states with states 26-50. Note that we have to exclude the 51st state.
 ```{r exercise-2-7, exercise=TRUE}
 
@@ -155,6 +196,7 @@ Use `str_c` to collapse states into the form `state1 & state2`. Combine the firs
 str_c(..., ..., sep = ...)
 ```
 
+### Exercise 8
 Use `str_replace()` to replace the pattern `North` with `N.`. For example, transform North Carolina into N. Carolina.
 ```{r exercise-2-8, exercise=TRUE}
 
@@ -164,6 +206,7 @@ Use `str_replace()` to replace the pattern `North` with `N.`. For example, trans
 str_replace(..., pattern = ..., replacement = ...)
 ```
 
+### Exercise 9
 Use `str_subset()` to find `states` that contain the letter a and then one or more characters and another a.
 ```{r exercise-2-9, exercise=TRUE}
 
@@ -177,6 +220,7 @@ Use `str_subset()` to find `states` that contain the letter a and then one or mo
 str_subset(..., pattern = ...)
 ```
 
+### Exercise 10
 Does capitalization matter? Repeat the previous question but replace the first letter with a capital "A". 
 ```{r exercise-2-10, exercise=TRUE}
 
@@ -186,6 +230,7 @@ Does capitalization matter? Repeat the previous question but replace the first l
 str_subset(..., pattern = ...)
 ```
 
+### Exercise 11
 `glimpse()` the `states2` tibble. 
 ```{r exercise-2-11, exercise=TRUE}
 
@@ -195,6 +240,7 @@ str_subset(..., pattern = ...)
 glimpse(states2)
 ```
 
+### Exercise 12
 `mutate()` the `states2` dataset so that it contains a column `state_length` that takes the `str_length()` of each `state`. Then, `arrange()` the dataset from the state with the longest name to that with the shortest.
 ```{r exercise-2-12, exercise=TRUE}
 
@@ -206,6 +252,7 @@ states2 %>%
   arrange(desc(...))
 ```
 
+### Exercise 13
 Now compare the previous question by the `states2` dataset arranged by `desc(state)`. How does this arrangement differ from the previous one?
 ```{r exercise-2-13, exercise=TRUE}
 
@@ -216,6 +263,7 @@ Now compare the previous question by the `states2` dataset arranged by `desc(sta
   arrange(desc(...))
 ```
 
+### Exercise 14
 `mutate()` the `state` column of `states2` to only contain the first two letters of each state name. Reassign this as `states2`.
 ```{r exercise-2-14, exercise=TRUE}
 
@@ -230,6 +278,7 @@ states2 <- states2 %>%
   mutate(state = str_sub(state, 1, 2))
 ```
 
+### Exercise 15
 Now use `str_to_upper()` and `mutate()` to make both of the first two letters of the states capital letters. Reassign this as `states2`.
 ```{r exercise-2-15, exercise=TRUE}
 
@@ -245,6 +294,7 @@ states2 <- states2 %>%
   mutate(state = str_to_upper(state))
 ```
 
+### Exercise 16
 `mutate()` a new column called `match` that creates a TRUE or FALSE value if the first two letters of the state name (the `state` column) and the `abb` column match.
 ```{r exercise-2-16, exercise=TRUE}
 
@@ -254,6 +304,7 @@ states2 <- states2 %>%
 states2 %>% mutate(match = (... == ...))
 ```
 
+### Exercise 17
 ```{r exercise-2-17-setup}
 states2 <- states2 %>%
   mutate(state = str_sub(state, 1, 2)) %>% 
@@ -282,6 +333,135 @@ quiz(
 ```
 
 ## Factors 
+
+### Exercise 1
+Let's use a dataset in the `fueleconomy` package to better understand factors. First, `glimpse()` the `vehicles` dataset. 
+```{r factors-1, exercise=TRUE}
+
+```
+
+### Exercise 2 
+Make the `class` column in the `vehicles` dataframe a factor instead of a character `chr` variable. Do this by using the `mutate()` and `as.factor()` functions. Reassign this changed dataframe as `vehicles_fct`. 
+```{r factors-2, exercise = TRUE}
+
+```
+
+```{r factors-2-hint, eval=FALSE}
+... <- vehicles %>%
+  mutate(... = as.factor(...))
+```
+
+### Exercise 3
+Now use the `group_by()` function to group by the `class` variable. Reassign this to `vehicles_fct`.
+
+```{r factors-3-setup}
+vehicles_fct <- vehicles %>%
+  mutate(class = as.factor(class))
+```
+
+```{r factors-3, exercise = TRUE}
+
+```
+
+### Exercise 4
+Create a `mean_cty` variable using the `mutate()` and `mean()` functions for the `vehicles_fct` dataframe. Reassign this mutated dataframe as `vehicles_fct`.
+```{r factors-4-setup}
+vehicles_fct <- vehicles %>%
+  mutate(class = as.factor(class)) %>%
+  group_by(class)
+```
+
+```{r factors-4, exercise = TRUE}
+
+```
+
+### Exercise 5
+Create a ggplot with the independent variable as `class`, the dependent variable as `mean_cty`, and the `geom_point()` function. Names this plot `vehicles_plot`.
+
+```{r factors-5-setup}
+vehicles_fct <- vehicles %>%
+  mutate(class = as.factor(class)) %>%
+  group_by(class) %>%
+  summarize(mean_cty = mean(cty))
+```
+
+```{r factors-5, exercise = TRUE}
+
+```
+
+```{r factors-5-hint-1, eval=FALSE}
+# The independent variable should always be on the x-axis and the dependent 
+# variable on the y-axis
+```
+
+```{r factors-5-hint-2, eval=FALSE}
+vehicles_plot <- ggplot(data = ..., mapping = aes(x = ..., y = ...)) +
+  ...
+```
+
+### Exercise 6
+Flip the coordinates of the`vehicles_plot` graphic. Reassign the flipped graphic as `vehicles_plot`.
+```{r factors-6-setup}
+vehicles_fct <- vehicles %>%
+  mutate(class = as.factor(class)) %>%
+  group_by(class) %>%
+  summarize(mean_cty = mean(cty), .groups = "drop_last")
+
+vehicles_plot <- ggplot(data = vehicles_fct, mapping = aes(x = class,
+                                                            y = mean_cty)) +
+  geom_point()
+```
+
+```{r factors-6, exercise = TRUE}
+
+```
+
+```{r factors-6-hint}
+# Look at the coord_flip() function
+```
+
+
+### Exercise 7
+
+Now use `fct_reorder()` to rearrange the levels of `class` variable according to the `mean_cty` variable. You will need to do this within the `ggplot()` function, so create a new plot here, and call it `vehicles_plot_2`. Once again, flip the coordinates for this new graphic. 
+
+```{r factors-7-setup}
+vehicles_fct <- vehicles %>%
+  mutate(class = as.factor(class)) %>%
+  group_by(class) %>%
+  summarize(mean_cty = mean(cty))
+```
+
+```{r factors-7, exercise = TRUE}
+
+```
+
+```{r factor-7-hint, eval=FALSE}
+vehicles_plot_2 <- ggplot(data = ..., mapping = aes(x = fct_reorder(..., ...),
+                                                    y = ...)) + 
+  ... +
+  ...
+```
+
+### Exercise 8
+Apply the classic theme `theme_classic()` and add a title and axis titles to `vehicles_plot_2`. 
+
+```{r factors-8-setup}
+vehicles_fct <- vehicles %>%
+  mutate(class = as.factor(class)) %>%
+  group_by(class) %>%
+  summarize(mean_cty = mean(cty))
+
+vehicles_plot_2 <- ggplot(data = vehicles_fct, mapping = aes(x = fct_reorder(class, 
+                                                                             mean_cty), 
+                                                             y = mean_cty)) + 
+  geom_point() + 
+  coord_flip()
+```
+
+```{r factors-8, exercise = TRUE}
+
+```
 
 ## Lists
 ### Exercise 1
@@ -710,69 +890,187 @@ quiz(
 ```
 
 ## Tidying Data
-
-### Exercise 1
-Run `table1` in the code chunk below:
-```{r question-tidying-1, exercise=TRUE}
+### Exercise 1 
+Run `table1` and `table2` in the code chunk below. 
+```{r tidy-1, exercise=TRUE}
 
 ```
 
-```{r question-tidying-1-solution}
-table1
-```
-
-```{r question-tidying-1-quiz}
-quiz(
-  question("Is table1 in tidy format?",
-  answer("Yes", correct = TRUE),
-  answer("No"),
-  allow_retry = TRUE
+```{r q2, echo = FALSE}
+question("Do the two data datasets above contain the variables **country**, **year**, **cases**, and **population**?",
+         answer("Yes", correct = TRUE, message = "If you look closely, you will see that this is the same data set as before, but organized in a new way."),
+         answer("No", message = "Don't be mislead by the two new column names: a variable and a column name are not necessarily the same thing."),
+         allow_retry = TRUE
 )
-)
-
 ```
+
+These data sets reveal something important: _you can reorganize the same set of variables, values, and observations in many different ways._
+
+It's not hard to do. If you run the code chunks below, you can see the same data displayed in three more ways. 
+
+```{r tidy-2, exercise = TRUE}
+table3
+```
+
+```{r tidy-3, exercise = TRUE}
+table4a; table4b
+```
+
+```{r tidy-4, exercise = TRUE}
+table5
+```
+
+Among our tables above, only `table1` is tidy.
+
+The tidy data format works so well for R because it aligns the structure of your data with the mechanics of R, so let's try to tidy a tibble. 
 
 ### Exercise 2
-Now, run `table2` in the code chunk below:
-```{r question-tidying-2, exercise=TRUE}
 
+Run `cases` in the code chunk below. 
+
+```{r tidy-5, exercise = TRUE}
+cases
 ```
 
-```{r question-tidying-2-solution}
-table2
-```
-
-```{r question-tidying-2-quiz}
+```{r tidy-6}
 quiz(
-  question("Is table2 in tidy format?",
-  answer("Yes"),
-  answer("No", correct = TRUE),
-  allow_retry = TRUE
-)
+  question("What are the variables in cases?",
+         answer("Country, 2011, 2012, and 2013"),
+         answer("Country, year, and some unknown quantity (n, count, number of cases, etc.)", correct = TRUE),
+         answer("FR, DE, and US"),
+         allow_retry = TRUE
+         )
 )
 ```
 
-### Exercise 3 
-Use `pivot_longer()` to put `table1` into untidy format.
-```{r question-tidying-3, exercise=TRUE}
+### Exercise 3
+You can use the `pivot_longer()` function in the **tidyr** package to convert wide data to long data. Let's use the `pivot_longer` function to tidy the data, pivoting all of the columns except for the Country column, and setting the new name to "year" and the new values to "cases".
+
+```{r tidy-7, exercise=TRUE}
 
 ```
 
-```{r question-tidying-3-hint, eval=FALSE}
-... %>%
+```{r tidy-7-hint-1, echo=FALSE}
+# Consider using - to select the columns you want to pivot
+```
+
+```{r tidy-7-hint-2, echo=FALSE}
+cases %>%
   pivot_longer(cols = ..., names_to = ..., values_to = ...)
 ```
 
-### Exercise 4 
+### Exercise 4
+Try this again with `cases2`. Make sure to only include the three year columns that you want to pivot. 
 
-Use `pivot_wider()` to put `table2` into tidy format.
-```{r question-tidying-4, exercise=TRUE}
+```{r tidy-8, exercise=TRUE}
 
 ```
 
-```{r question-tidying-4-hint, eval=FALSE}
-... %>%
-  pivot_wider(names_from = ..., values_from = ...)
+### Exercise 5
+
+The `pollution` dataset below displays the amount of small and large particulate in the air of three cities. It illustrates another common type of untidy data. **Narrow data** uses a literal key column and a literal value column to store multiple variables. Can you tell here which is which? Run the code chunk below. 
+
+```{r tidy-9, exercise = TRUE}
+pollution
+```
+
+```{r tidy-10}
+quiz(
+  question("Which column in pollution contains key names (i.e. variable names)?",
+         answer("city"),
+         answer("size", correct = TRUE), 
+         answer("amount"),
+         allow_retry = TRUE)
+)
+
+```
+
+
+### Exercise 6
+
+You can "spread" the keys in a key column across their own set of columns with the `pivot_wider()` function in the **tidyr** package. With pollution, set the names_from argument to "size" and the values_from argument to "amount". In addition, set the names_prefix column to "particulate_"
+
+```{r tidy-12, exercise=TRUE}
+
+```
+
+```{r tidy-12-hint, echo=FALSE}
+... %>% pivot_wider(names_from = ..., values_from = ..., names_prefix = ...)
+```
+
+### Exercise 7
+
+Let's apply `pivot_wider()` to a real world inquiry. The ratio of girls to boys in `babynames` is not constant across time. To explore this phenomenaon we can directly plot a ratio of boys to girls over time. To make such a plot, you would need to compute the ratio of boys to girls for each year from 1880 to 2015
+Call `babynames` first to see the dataset.
+
+```{r tidy-13, exercise=TRUE}
+
+```
+
+
+### Exercise 8 
+First, create a variable called `babynames_wider`. And `group_by()` the `year` and `sex` variables.
+
+```{r tidy-14, exercise=TRUE}
+
+```
+
+### Exercise 9
+
+Now take `babynames_wider` and `summarize()` the take the `sum()` of the `n` column. Call this summarized column `total`. Be sure to reassign this to `babynames_wider`. 
+
+```{r tidy-15-setup}
+babynames_wider <- babynames %>%
+  group_by(year, sex)
+```
+
+```{r tidy-15, exercise=TRUE}
+
+```
+
+### Exercise 10
+
+But how can we plot this data? Our current iteration of `babynames` places the total number of boys and girls for each year in the same column, which makes it hard to use both totals in the same calculation. Use `pivot_wider()` to pivot the `sex` and `total` columns. Choos which should be the key/name and which should be the value. Be sure to reassign this to `babynames_wider`. 
+```{r tidy-16-setup}
+ babynames_wider <- babynames %>%
+  group_by(year, sex) %>%
+  summarize(total = sum(n), .groups = "drop_last")
+```
+
+```{r tidy-16, exercise=TRUE}
+
+```
+
+```{r tidy-16-hint}
+babynames_wider <- babynames_wider %>%
+  pivot_wider()
+```
+
+### Exercise 11
+Now, mutate a column `ratio` that divides `M/F`.
+```{r tidy-17-setup}
+ babynames_wider <- babynames %>%
+  group_by(year, sex) %>%
+  summarize(total = sum(n), .groups = "drop_last") %>%
+  pivot_wider(names_from = sex, values_from = total)
+```
+
+```{r tidy-17, exercise=TRUE}
+
+```
+
+### Exercise 12
+Now create a `ggplot` line plot that takes `year` on the x-axis and `ratio` on the y-axis. 
+```{r tidy-18-setup}
+babynames_wider <- babynames %>%
+  group_by(year, sex) %>%
+  summarize(total = sum(n), .groups = "drop_last") %>%
+  pivot_wider(names_from = sex, values_from = total) %>%
+  mutate(ratio = M / F)
+```
+
+```{r tidy-18, exercise=TRUE}
+
 ```
 
 ## National Health and Nutrition Survey
@@ -2251,335 +2549,6 @@ q_plot <- ggplot(data = q_bind, mapping = aes(x = value)) +
 
 ```
 
-
-<!-- DK: Commented out this whole thing. Need to be more careful. Key issue seems to be that there is an object --- most_common_races --- which we need to create because it is used later in a join. But nowhere is it created, so the join fails. Please fix this. -->
-
-<!-- ## CCES Dataset -->
-<!-- ### Exercise 1 -->
-
-<!-- The `cces` data set, an acronym for "Cooperative Congressional Election Study," includes the presidential approval (and a bunch of demographic data) from over 450,000 individual Americans. -->
-
-<!-- Since this data set is so large, start by using `sample_n()` to return 10 random observations from `cces`. -->
-
-<!-- ```{r cces1, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ### Exercise 2 -->
-
-<!-- Use `select()` and the `c()` function to remove the `news`, `econ`, `marstat`, and `approval_ch` variables. Call this new dataset `cces_subset`.  -->
-
-<!-- ```{r cces2, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces2-hint-1} -->
-<!-- # Remember that select(-column_name) returns all of the columns in the data set except for that column. -->
-<!-- ``` -->
-
-<!-- ```{r cces2-hint-2, eval = FALSE} -->
-<!-- cces %>% -->
-<!--   select(-c(...)) -->
-<!-- ``` -->
-
-<!-- ### Exercise 3 -->
-
-<!-- Use `filter()` to limit the data to the years 2009-2016 (to keep the approval data limited to a single president, Obama). Try to use the `%in%` operator to keep your code concise and clear. Don't forget to reassign this as `cces_subset`. -->
-
-<!-- ```{r cces3-setup} -->
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) -->
-<!-- ``` -->
-
-<!-- ```{r cces3, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces3-hint} -->
-<!-- # Remember that c(a:b) makes a vector from a to b. For example, c(1:10) makes a vector with the numbers from 1 to 10. -->
-<!-- ``` -->
-
-<!-- ### Exercise 4 -->
-
-<!-- Call `filter` a second time and  remove any observations with an `ideology` of "Not Sure" (this makes the trends in our data easier to detect). -->
-
-<!-- ```{r cces4-setup} -->
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016)) -->
-<!-- ``` -->
-
-<!-- ```{r cces4, exercise = TRUE, exercise.lines = 4} -->
-
-<!-- ``` -->
-
-<!-- ### Exercise 5 -->
-
-<!-- Now that `cces` is organized, our goal will be to plot the relationship between `race`, `ideology`, and `approval` of President Obama. Start by grouping the data by `race` and `ideology`. -->
-<!-- ```{r cces5-setup} -->
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") -->
-<!-- ``` -->
-
-<!-- ```{r cces5, exercise = TRUE, exercise.lines = 4} -->
-
-<!-- ``` -->
-
-<!-- ### Exercise 6 -->
-
-<!-- Use `summarize` to return a tibble with a new variable, `mean_approval`, that is equal to the average `approval` for each group. What goes wrong? -->
-
-<!-- ```{r cces6-setup} -->
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") %>% -->
-<!--   group_by(race, ideology) -->
-<!-- ``` -->
-
-<!-- ```{r cces6, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces6-hint, eval = FALSE} -->
-<!-- # Don't forget to use the mean() function within summarize() -->
-<!-- ``` -->
-
-<!-- ### Exercise 7 -->
-
-<!-- Almost all of our rows have an `NA` for `mean_approval`! This is because if any single row has an `NA` in our original table, the `mean()` function will return `NA`. To avoid this, take take the `mean()` again and set the `na.rm` argument to TRUE. -->
-
-<!-- ```{r cces7-setup} -->
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") %>% -->
-<!--   group_by(race, ideology) -->
-<!-- ``` -->
-
-<!-- ```{r cces7, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces7-hint, eval=FALSE} -->
-<!-- cces_subset <- cces_subset %>% -->
-<!--   summarize(mean_approval = mean(approval, ...)) -->
-<!-- ``` -->
-
-<!-- ### Exercise 8 -->
-
-<!-- Use `ggplot()` to ake a bar chart with `ideology` on the x-axis, `mean_approval` on the y-axis, and `race` as the fill aesthetic. Call this plot `cces_plot`.  -->
-
-<!-- ```{r cces8-setup} -->
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") %>% -->
-<!--   group_by(race, ideology) %>% -->
-<!--   summarize(mean_approval = mean(approval, na.rm = TRUE)) -->
-<!-- ``` -->
-
-<!-- ```{r cces8} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces8-hint} -->
-<!-- # Remember to use geom_col() instead of geom_bar() when you map a variable to the y-axis. -->
-<!-- ``` -->
-
-<!-- ### Exercise 9 -->
-
-<!-- This stacked bar chart is a good start, but it's still pretty difficult to understand. Use the `position_dodge` function with `preserve` equal to "single" to make the graph clearer. We've taken the liberty of removing the `geom_col()` in the previous question, so you can start fresh. -->
-
-<!-- ```{r cces9-setup} -->
-<!-- cces_subset <-  cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") %>% -->
-<!--   group_by(race, ideology) %>% -->
-<!--   summarize(mean_approval = mean(approval, na.rm = TRUE)) -->
-<!-- cces_plot  <- ggplot(data = cces_subset, mapping = aes(x = ideology, y = mean_approval, fill = race))  -->
-<!-- ``` -->
-
-<!-- ```{r cces9, exercise = TRUE, exercise.lines = 8} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces9-hint, eval = FALSE} -->
-<!-- cces_plot <- cces_plot +  -->
-<!--   geom_col(position = ...) -->
-<!-- ``` -->
-
-<!-- ### Exercise 10 -->
-
-<!-- Bar charts are easier to read if they are increasing from left to right. Use a `fct_` function to reorder the chart based on each `ideology`'s `mean_approval`. Call this new plot `cces_plot_2`.  -->
-
-<!-- <!-- Comment: technically there are separate mean_approval values for each race; is there any way to get around this (i.e. only sort by the values for one race?) Or would this just sort by the average of mean_approval? --> -->
-<!-- ```{r cces10-setup} -->
-<!-- cces_subset <-  cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") %>% -->
-<!--   group_by(race, ideology) %>% -->
-<!--   summarize(mean_approval = mean(approval, na.rm = TRUE)) -->
-
-<!-- ``` -->
-
-<!-- ```{r cces10, exercise = TRUE, exercise.lines = 8} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces10-hint} -->
-<!-- # Try using fct_reorder(). -->
-<!-- ``` -->
-
-<!-- ### Exercise 11 -->
-
-<!-- Our graph is looking good, but the 8 separate races take up a lot of space and make it hard to read. Let's try to limit the graph to the 3 most common races in our data set. Start by making a new pipe that groups `cces` by `race`. Call this `cces_subset_2`. -->
-
-<!-- ```{r cces11, exercise = TRUE, exercise.lines = 10, eval = FALSE} -->
-
-<!-- ``` -->
-
-<!-- ### Exercise 12 -->
-
-<!-- Next, use `summarize()` on the to create a new variable in `cces_subset_2`, `num_ppl`, equal to the number of times each race occurs. -->
-<!-- ```{r cces12-setup} -->
-<!-- cces_subset_2 <- cces %>% -->
-<!--   group_by(race) -->
-<!-- ``` -->
-
-<!-- ```{r cces12, exercise = TRUE, exercise.lines = 11} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces12-hint} -->
-<!-- # Remember that the function n() counts the number of rows in each group. -->
-<!-- ``` -->
-
-<!-- ### Exercise 13 -->
-
-<!-- `arrange()` `cces_subset_2` by `num_ppl` in descending order. -->
-
-<!-- ```{r cces13-setup} -->
-<!-- cces_subset_2 <- cces %>% -->
-<!--   group_by(race) %>% -->
-<!--   summarize(num_ppl = n()) -->
-<!-- ``` -->
-
-<!-- ```{r cces13, exercise = TRUE, exercise.lines = 12} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces13-hint} -->
-<!-- # Remember to incorporate desc() into your arrange() function. -->
-<!-- ``` -->
-
-<!-- ### Exercise 14 -->
-
-<!-- Finally, use `slice()` to keep the top 3 rows of `cces_subset_2`.. -->
-<!-- ```{r cces14-setup} -->
-<!-- cces_subset_2 <- cces %>% -->
-<!--   group_by(race) %>% -->
-<!--   summarize(num_ppl = n()) %>% -->
-<!--   arrange(desc(num_ppl)) -->
-<!-- ``` -->
-
-<!-- ```{r cces14, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ### Exercise 15 -->
-
-<!-- Returning to `cces_subset`, use a filtering join before our `ggplot()` call so that only the races in `cces_subset_2` remain. -->
-<!-- ```{r cces15-setup} -->
-<!-- cces_subset_2 <- cces %>% -->
-<!--   group_by(race) %>% -->
-<!--   summarize(num_ppl = n()) %>% -->
-<!--   arrange(desc(num_ppl)) %>% -->
-<!--   slice(1:3) -->
-
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") %>% -->
-<!--   group_by(race, ideology) %>% -->
-<!--   summarize(mean_approval = mean(approval, na.rm = TRUE)) -->
-<!-- ``` -->
-
-<!-- ```{r cces15, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces15-hint-1} -->
-<!-- # Did you remember to use semi_join()? -->
-<!-- ``` -->
-
-<!-- ```{r cces15-hint-2, eval=FALSE} -->
-<!-- cces_subset <- cces_subset %>% -->
-<!--   semi_join(..., by = ...) -->
-<!-- ``` -->
-
-<!-- ### Exercise 16 -->
-
-<!-- Our graph is starting to look good! Now, create the same plot you had previously using the new data. Call this `cces_plot_2`. To improve the aesthetics, add a `scale_` function to use RColorBrewer's "Dark2" palette to fill the bars. -->
-
-<!-- ```{r cces16-setup} -->
-<!-- cces_subset_2 <- cces %>% -->
-<!--   group_by(race) %>% -->
-<!--   summarize(num_ppl = n()) %>% -->
-<!--   arrange(desc(num_ppl)) %>% -->
-<!--   slice(1:3) -->
-
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") %>% -->
-<!--   group_by(race, ideology) %>% -->
-<!--   summarize(mean_approval = mean(approval, na.rm = TRUE)) %>% -->
-<!--   semi_join(most_common_races, by = "race") -->
-<!-- ``` -->
-
-<!-- ```{r cces16, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces16-hint-1} -->
-<!-- # Remember that because we want to change the fill aesthetic (and not the color aesthetic), we have to adjust the syntax of our scale_ function -->
-<!-- ``` -->
-
-<!-- ```{r cces16-hint-2, eval = FALSE} -->
-<!-- cces_plot_2 <- cces_plot_2 %>% + -->
-<!--     scale_fill_brewer(...) -->
-<!-- ``` -->
-
-<!-- ### Exercise 17 -->
-
-<!-- We can now clearly see the trend that more liberal Americans had a higher approval of President Obama. In addition, Black Americans gave Obama higher approval than Hispanic Americans, who, in turn, gave Obama higher approval than white Americans. -->
-
-<!-- To finish your plot, use `labs()` to change the x-axis label so it simply reads as "ideology." In addition, give the graph a title and subtitle of your choosing.  -->
-<!-- ```{r cces17-setup} -->
-<!-- cces_subset_2 <- cces %>% -->
-<!--   group_by(race) %>% -->
-<!--   summarize(num_ppl = n()) %>% -->
-<!--   arrange(desc(num_ppl)) %>% -->
-<!--   slice(1:3) -->
-
-<!-- cces_subset <- cces %>% -->
-<!--   select(-c(news, econ, marstat, approval_ch)) %>% -->
-<!--   filter(year %in% c(2009:2016), ideology != "Not Sure") %>% -->
-<!--   group_by(race, ideology) %>% -->
-<!--   summarize(mean_approval = mean(approval, na.rm = TRUE)) %>% -->
-<!--   semi_join(most_common_races, by = "race") -->
-
-<!-- cces_plot_2 <- ggplot(data = cces_subset, mapping = aes(x = fct_reorder(ideology, mean_approval), y = mean_approval, fill = race)) + -->
-<!--     geom_col(position = position_dodge(preserve = "single")) + -->
-<!--     scale_fill_brewer(palette = "Dark2") -->
-<!-- ``` -->
-
-<!-- ```{r cces17, exercise = TRUE} -->
-
-<!-- ``` -->
-
-<!-- ```{r cces17-hint, eval = FALSE} -->
-<!-- cces_plot_2 + -->
-<!--     labs(...) -->
-<!-- ``` -->
-
 ## National Election Studies
 
 `nes`, short for "National Election Studies," contains the personal and political information of almost 40,000 American voters, as well as whether or not they voted in that year's presidential election.
@@ -2874,17 +2843,17 @@ nes %>%
 
 ## Airline Safety 
 
-###
+### Exercise 1
 
-We will be focusing on the data set `airline_saftey` from the `fivethirtyeight` package. Start by taking a `glimpse` of `airline_safety`:
+We will be focusing on the data set `airline_safety` from the `fivethirtyeight` package. Start by taking a `glimpse` of `airline_safety`:
 
 ```{r as-1, exercise=TRUE}
 
 ```
 
-###
+### Exercise 2 
 
-Do you notice anything off about the `airline_saftey` data? It's untidy! Over the next few questions, we are going to fix this. Let's start by making the table "longer." Use `pivot_longer()` to pivot the columns `incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14` and  `fatalities_85_99` into the two new columns `type_date` and `count`. 
+Do you notice anything off about the `airline_safety` data? It's untidy! Over the next few questions, we are going to fix this. Let's start by making the table "longer." Use `pivot_longer()` to pivot the columns `incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14` and  `fatalities_85_99` into the two new columns `type_date` and `count`. 
 
 
 ```{r as-2, exercise=TRUE}
@@ -2897,7 +2866,7 @@ airline_safety %>%
         names_to = "...", values_to = "...")
 ```
 
-### 
+### Exercise 3
 
 Nice! Do you see what our next step has to be? In our `type_date` column, we have data on both the type of incident and the date range in which it occurred. This should really be two columns. Let's use the `separate()` to separate `type_date` into the two columns `type` and `date`. Separate on the s_ characters by setting the `sep` argument inside of `separate()` to "s_". 
 
@@ -2912,7 +2881,7 @@ Nice! Do you see what our next step has to be? In our `type_date` column, we hav
    separate(type_date, c("...", "..."), sep = "...")
 ```
 
-### 
+### Exercise 5
 
 Fantastic! Now that our data is tidy, we can get to work. `filter()` `airline_tidy` so that we narrow down our data set to data where date is "00_14", type is "incident", and count is greater than 0.
 
@@ -2921,7 +2890,7 @@ Fantastic! Now that our data is tidy, we can get to work. `filter()` `airline_ti
 
 ```
 
-### 
+### Exercise 6
 
 Nice! Now use `mutate()` to create the new variable `safety_value` and set it equal to `avail_seat_km_per_week` divided by `count`
 
@@ -2931,7 +2900,7 @@ Nice! Now use `mutate()` to create the new variable `safety_value` and set it eq
 
 ```
 
-### 
+### Exercise 7
 
 Nice! Now arrange `airline_tidy` by `safety_value`.
 
@@ -2941,7 +2910,7 @@ Nice! Now arrange `airline_tidy` by `safety_value`.
 
 ```
 
-### 
+### Exercise 8
 
 Great! Let's now use our wrangled data to create a bar plot using `geom_col()` with `airline` on the x axis and `safety_value` on the y axis. Call it `as_plot`. 
 
@@ -2955,7 +2924,7 @@ Great! Let's now use our wrangled data to create a bar plot using `geom_col()` w
 
 ```
 
-###
+### Exercise 10 
 
 Awesome! As you can see, the airline names on the y axis are crowded and basically impossible to read. Let's change this by using theme() and setting the x axis text size to 5 and angle to 90.
 
@@ -2972,7 +2941,7 @@ Awesome! As you can see, the airline names on the y axis are crowded and basical
 
 ```
 
-### 
+### Exercise 11
 
 Great! Now add some labels to finish our plot off! Here is our version. As always, it is OK if yours looks different.
 
@@ -3782,7 +3751,7 @@ bd_plot <- ggplot(data = bd_subset, aes(x = state, y = percent), fill = state) +
 
 ```
 
-## US_births_1994_2003
+## US births
 
 ### Exercise 1
 
