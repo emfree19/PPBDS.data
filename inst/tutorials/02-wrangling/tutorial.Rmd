@@ -143,7 +143,7 @@ str_subset(..., pattern = ...)
 ```
 
 ### Exercise 3
-Use `str_subset()` to find `states` that have two a's in their name:
+Use `str_subset()` to find `states` that have two a's with a single intervening character in their name:
 ```{r exercise-2-3, exercise=TRUE}
 
 ```
@@ -241,7 +241,7 @@ glimpse(states2)
 ```
 
 ### Exercise 12
-`mutate()` the `states2` dataset so that it contains a column `state_length` that takes the `str_length()` of each `state`. Then, `arrange()` the dataset from the state with the longest name to that with the shortest.
+`mutate()` the `states2` dataset so that it contains a column `state_length` that takes the `str_length()` of each `state`. Then, `arrange()` the dataset from the state with the shortest name to that with the longest.
 ```{r exercise-2-12, exercise=TRUE}
 
 ```
@@ -364,7 +364,7 @@ vehicles_fct <- vehicles %>%
 ```
 
 ### Exercise 4
-Create a `mean_cty` variable using the `mutate()` and `mean()` functions for the `vehicles_fct` dataframe. Reassign this mutated dataframe as `vehicles_fct`.
+Create a `mean_cty` variable using the `mutate()` and `mean()` functions on the `cty` column for the `vehicles_fct` dataframe. Reassign this mutated dataframe as `vehicles_fct`.
 ```{r factors-4-setup}
 vehicles_fct <- vehicles %>%
   mutate(class = as.factor(class)) %>%
@@ -502,7 +502,7 @@ mylist <- list(a = c(1, 2, 3), b = c(4, 5, 6), c = c(7, 8, 9))
 
 ### Exercise 4
 
-Now extract a single component a from `mylist`
+Now extract a single component `a` from `mylist`
 
 ```{r lists-4-setup}
 mylist <- list(a = c(1, 2, 3), b = c(4, 5, 6), c = c(7, 8, 9))
@@ -793,17 +793,6 @@ quiz(
 
 ```
 
-```{r question-combining-14-2-quiz}
-quiz(
-  question("Which id(s) will be excluded when you run left_join(lexus_mileage, lexus_2000)?",
-    answer("None"),
-    answer("All"),
-    answer("15920, 15801", correct = TRUE),
-    answer("15801, 15922"),
-    allow_retry = TRUE
-  )
-)
-```
 
 ```{r question-combining-14-3-quiz}
 quiz(
@@ -855,7 +844,7 @@ quiz(
 
 ```{r question-combining-14-7-quiz}
 quiz(
-  question("Which id(s) will be excluded when you run anti_join(lexus_2000, lexus_mileage, by = 'id')?",
+  question("Which id(s) will be included when you run anti_join(lexus_2000, lexus_mileage, by = 'id')?",
     answer("None"),
     answer("All"),
     answer("15920, 15801", correct = TRUE),
@@ -1604,7 +1593,7 @@ kenya_plot_2 +
 ## Seguro Popular
 ### Exercise 1 
 
-The `sps` data set from the PPBDS.data pakcage contains information about a study done on a popular Mexican health insurance program, Seguro Popular. In the study, some Mexican health clusters were randomly "treated." The treatment consisted of encouragement for people in that health cluster to enroll in the health insurance program, as well as funds to improve health facilities in the cluster.
+The `sps` data set from the PPBDS.data package contains information about a study done on a popular Mexican health insurance program, Seguro Popular. In the study, some Mexican health clusters were randomly "treated." The treatment consisted of encouragement for people in that health cluster to enroll in the health insurance program, as well as funds to improve health facilities in the cluster.
 
 Start by calling `glimpse()` on `sps`.
 
@@ -1655,7 +1644,7 @@ sps_subset <- sps %>%
 
 ```
 
-```{r sps3-hint-1, eval=FALSe}
+```{r sps3-hint-1, eval=FALSE}
 # Remember that select(-column_name) returns all columns except for that column.
 ```
 
@@ -1740,7 +1729,7 @@ sps_subset <- sps %>%
 
 ### Exercise 8 
 
-Use the `position_dodge` function with `preserve` equal to "single" to create a dodged barplot. Does it work?
+Use the `position_dodge` function with `preserve` equal to "single" to create a dodged barplot. Does it work? Note, we have taken the liberty of removing the `geom_col()` layer, so you can accomplish this. Simply add it back to the `sps_plot`. 
 
 ```{r sps8-setup}
 sps_subset <- sps %>%
@@ -1750,8 +1739,7 @@ sps_subset <- sps %>%
   group_by(treatment, education) %>%
   summarize(mean_change_in_expenses = mean(change_in_expenses))
 
-sps_plot <- ggplot(data = sps_subset, mapping = aes(x = education, y = mean_change_in_expenses, fill = treatment)) +
-    geom_col()
+sps_plot <- ggplot(data = sps_subset, mapping = aes(x = education, y = mean_change_in_expenses, fill = treatment))
 ```
 
 ```{r sps8, exercise = TRUE}
@@ -1872,7 +1860,7 @@ sps_plot_2 <- ggplot(data = sps_subset, mapping = aes(x = fct_reorder(education,
     theme_minimal()
 ```
 
-```{r sps13, exericse = TRUE}
+```{r sps13, exercise = TRUE}
 
 ```
 
@@ -1934,7 +1922,7 @@ shaming %>%
 
 ### Exercise 5
 
-Now, use `if_else()` before the `pivot_longer()` statement to `mutate()` the `primary_04` column. The condition should should be a `str_detect()` of the string "Yes" in `primary_04`. If the condition is true, return 1 **as an integer**, and if the condition is false, return 0 **as an integer**.
+Now, use `if_else()` before the `pivot_longer()` statement to `mutate()` the `primary_04` column. The condition should should be a `str_detect()` of the string "Yes" in `primary_04`. If the condition is true, return 1 **as an integer**, and if the condition is false, return 0 **as an integer**. Don't forget to `pivot_longer()` once again. 
 
 ```{r shaming5-setup}
 shaming_subset <- shaming %>%
@@ -2089,7 +2077,8 @@ shaming_subset <- shaming %>%
   mutate(voted = if_else(condition = voted == 1,
                          true = "did_vote",
                          false = "did_not_vote")) %>%
-  pivot_wider(names_from = voted, values_from = num_voters)
+  pivot_wider(names_from = voted, values_from = num_voters) %>%
+  mutate(pct_voted = did_vote / (did_vote + did_not_vote))
 ```
 
 ```{r shaming11, exercise = TRUE, exercise.lines = 14}
@@ -2116,7 +2105,8 @@ shaming_subset <- shaming %>%
   mutate(voted = if_else(condition = voted == 1,
                          true = "did_vote",
                          false = "did_not_vote")) %>%
-  pivot_wider(names_from = voted, values_from = num_voters)
+  pivot_wider(names_from = voted, values_from = num_voters)  %>%
+  mutate(pct_voted = did_vote / (did_vote + did_not_vote))
 
 shaming_plot <- ggplot(data = shaming_subset, mapping = aes(x = treatment, y = pct_voted, fill = year)) +
     geom_col()
@@ -2146,7 +2136,8 @@ shaming_subset <- shaming %>%
   mutate(voted = if_else(condition = voted == 1,
                          true = "did_vote",
                          false = "did_not_vote")) %>%
-  pivot_wider(names_from = voted, values_from = num_voters)
+  pivot_wider(names_from = voted, values_from = num_voters)  %>%
+  mutate(pct_voted = did_vote / (did_vote + did_not_vote))
 ```
 
 ```{r shaming13, exercise = TRUE}
@@ -2169,7 +2160,8 @@ shaming_subset <- shaming %>%
   mutate(voted = if_else(condition = voted == 1,
                          true = "did_vote",
                          false = "did_not_vote")) %>%
-  pivot_wider(names_from = voted, values_from = num_voters)
+  pivot_wider(names_from = voted, values_from = num_voters)  %>%
+  mutate(pct_voted = did_vote / (did_vote + did_not_vote))
 
 shaming_plot_2 <- ggplot(data = shaming_subset, mapping = aes(x = fct_reorder(treatment, pct_voted), y = pct_voted, fill = year)) +
     geom_col(position = position_dodge(preserve = "single"))
@@ -2197,7 +2189,8 @@ shaming_subset <- shaming %>%
   mutate(voted = if_else(condition = voted == 1,
                          true = "did_vote",
                          false = "did_not_vote")) %>%
-  pivot_wider(names_from = voted, values_from = num_voters)
+  pivot_wider(names_from = voted, values_from = num_voters) %>%
+  mutate(pct_voted = did_vote / (did_vote + did_not_vote))
 
 shaming_plot_2 <- ggplot(data = shaming_subset, 
                          mapping = aes(x = fct_reorder(treatment, pct_voted), y = pct_voted, fill = year)) +
@@ -2359,6 +2352,15 @@ Great work! Our next goal will be to create a new column with the homework value
 `arrange()` both `q_subset` and `q_subset_2` by `department`. (because `department` is a character variable, this will arrange them in alphabetical order).
 
 ```{r qscores10-setup}
+q_subset <- qscores %>%
+  select(department, hours) %>%
+  group_by(department) %>%
+  summarize(num_classes = n(), mean_hours = mean(hours), sd_hours = sd(hours)) %>%
+  arrange(desc(num_classes)) %>%
+  slice(1:3) %>%
+  group_by(department) %>%
+  summarize(rnorm_values = rnorm(n = num_classes, mean = mean_hours, sd = sd_hours))
+
 q_subset_2 <- qscores %>%
   filter(department %in% c("ECON", "MATH", "GOV"))
 ```
@@ -2549,298 +2551,6 @@ q_plot <- ggplot(data = q_bind, mapping = aes(x = value)) +
 
 ```
 
-## National Election Studies
-
-`nes`, short for "National Election Studies," contains the personal and political information of almost 40,000 American voters, as well as whether or not they voted in that year's presidential election.
-
-Start by running `skim()` on `nes`. See if you can figure out the first and last years in the data set. You may need to load the **skimr** package first.
-
-```{r nes1, exercise = TRUE}
-
-```
-
-### 
-
-Use `levels()` and the `$` operator to explore the levels of the `education` variable. 
-
-```{r nes2, exercise = TRUE}
-
-```
-
-```{r nes2-hint, eval=FALSE}
-# The factor that we'd like to investigate is nes$education.
-```
-
-### 
-
-Select the `year`, `education`, `pres_appr`, `ideology`, and `voted` columns from `nes`.  
-
-```{r nes3, exercise = TRUE}
-
-```
-
-### 
-
-Continue by filtering the tibble such that `education` is either "Some Highschool," "Highschool," "Some College," or "Adv. Degree."
-
-
-```{r nes4, exercise = TRUE}
-
-```
-
-```{r nes4-hint, eval=FALSE}
-# Remember to use the %in% operator alongside the c() function.
-```
-
-###
-
-After filtering a factor, always remember that the *levels* of the factor have not been removed. To fix this, add a call within the pipe that drops (i.e. permanently removes) all deleted levels.
-
-
-```{r nes5, exercise = TRUE}
-
-```
-
-```{r nes5-hint, eval=FALSE}
-# Use the droplevels() function.
-```
-
-
-### 
-
-The dplyr `if_else()` function can be used alongside `mutate()` and `as.factor()` to create a factor with two levels depending on whether a certain `condition` is met. Run the code below to see how we can use `if_else()` to separate the `nes` data set into 2 groups based on whether the value of `ideology` is positive.
-
-```{r nes6, exercise = TRUE}
-nes %>%
-  select(year, education, pres_appr, ideology, voted) %>%
-  filter(education %in% c("Some Highschool", "Highschool", 
-                          "Some College", "Adv. Degree")) %>%
-  droplevels() %>% 
-  mutate(pos_ideology = 
-           as.factor(if_else(condition = ideology > 0,
-                                          true = "ideology_is_positive",
-                                          false = "ideology_not_positive")))
-```
-
-### 
-
-Now, use `if_else()` to `mutate()` a new variable, `opinion`. `opinion` should be a **factor** that equals "has_opinion" if that person either approves *or* disapproves of the president, but "no_opinion" otherwise. To do this, use the `if_else()` function with the condition being detection of the pattern "prove" in the string `pres_appr`. You can remove from your pipe the creation of pos_ideology since we won't be using that variable.
-
-
-```{r nes7, exercise = TRUE, exercise.lines = 10}
-
-```
-
-```{r nes7-hint-1, eval=FALSE}
-# Remember to use as.factor() before if_else().
-```
-
-```{r nes7-hint-2, eval=FALSE}
-# The function we want to use for the condition is str_detect().
-```
-
-```{r nes7-hint-3, eval=FALSE}
-nes %>%
-  select(year, education, pres_appr, ideology, voted) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>% 
-  mutate(opinion = as.factor(if_else(condition = str_detect(...),
-                                     true = ...,
-                                     false = ...)))
-```
-
-### 
-
-Our goal for the next few exercises will be to calculate voter turnout based on education and whether or not the voter has an opinion of the president at that time. 
-
-To start, group the tibble by `year`, `voted`, `opinion`, and `education`. Then, use `summarize()` to make a new variable, `count`, that simply counts the number of people (i.e. rows) in each group. What goes wrong?
-
-
-
-```{r nes8, exercise = TRUE, exercise.lines = 10}
-
-```
-
-```{r nes8-hint, eval=FALSE}
-# Remember that the n() function counts the number of rows in each group.
-```
-
-### 
-
-If we look closely, many of our rows have a value of `NA` for either `voted` or `opinion`. Furthermore, `n()` doesn't have an `na.rm` argument. To remove the `NA`s, use tidyr's `drop_na()` to drop any rows with missing values for any variable before the call to `group_by()` and `summarize()`. 
-
-
-```{r nes9, exercise = TRUE, exercise.lines = 15}
-
-```
-
-```{r nes9-hint, eval = FALSE}
-nes %>%
-  select(year, education, pres_appr, ideology, voted) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>% 
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>% 
-  drop_na() %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = ...)
-```
-
-### 
-
-Our goal is to calculate voter turnout within each category, the number of people who voted divided by the total number of people. Therefore, we want `Yes` and `No` (currently in the `voted` column) to be their own columns with the values that are currently in the `count` column.
-
-Use one of the `pivot_` functions to tidy our data in this way.
-
-
-```{r nes10, exercise = TRUE, exercise.lines = 15}
-
-```
-
-```{r nes10-hint-1, eval=FALSE}
-# Because we're making new columns from values, we want the pivot_wider() function.
-```
-
-```{r nes10-hint-2, eval = FALSE}
-... %>%
-  pivot_wider(names_from = ..., values_from = ...)
-```
-
-### 
-
-Great job! Now, to calculate turnout, simply `mutate()` another variable, `turnout`, equal to the number of people who voted (the number of `Yes`) divided by the total number of people. To make sure you are caught up, we provide the pipe as it should appear by this stage. You just need to add a line to create `turnout`.
-
-
-```{r nes11, exercise = TRUE, exercise.lines = 15}
-nes %>%
-  select(year, education, pres_appr, ideology, voted) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>% 
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>% 
-  drop_na() %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n()) %>% 
-  pivot_wider(names_from = voted, values_from = count)
-
-```
-
-```{r nes11-hint, eval=FALSE}
-# Remember that the total number of people in each group is (Yes + No).
-```
-
-###
-
-Next, use `ggplot()` to make a line graph that maps `year` to the x-axis, `turnout` to the y-axis, and `education` to both the color and linetype aesthetics.
-
-
-
-```{r nes12, exercise = TRUE}
-
-```
-
-###
-
-Use `facet_wrap` to facet the graph by opinion.
-
-
-```{r nes13, exercise = TRUE, exercise.lines = 15}
-
-```
-
-
-###
-
-This graph is starting to look pretty good, but the ordering of the legend is a bit confusing. Try using an `fct_` function to reorder the legend (both the color *and* linetype aesthetics) so that Adv. Degree is first, Some College is second, and so on. Something goes wrong with this first attempt, but we will fix it in the next exercise.
-
-```{r nes14, exercise = TRUE, exercise.lines = 15}
-
-```
-
-```{r nes14-hint-1, eval=FALSE}
-# Because this is a line graph, we want to use fct_reorder2().
-```
-
-
-###
-
-Although 3 of the 4 `education` statuses are reordered successfully, Adv. Degree is left on the bottom because it doesn't appear in the second graph. To fix this problem, change the `.fun` argument of both `fct_reorder2()` calls to first2 (the default is last2).  
-
-
-```{r nes15, exercise = TRUE, exercise.lines = 15}
-
-```
-
-```{r nes15-hint, eval = FALSE}
-.. %>% 
-  ggplot(data = nes_subset, 
-         mapping = aes(x = year, y = turnout, 
-                       color = fct_reorder2(education, year, turnout, 
-                                            .fun = ...), 
-                       linetype = fct_reorder2(education, year, 
-                                               turnout, .fun = ...))) +
-    geom_line() +
-    facet_wrap(~ opinion)
-```
-
-###
-
-Our graph is looking good, but the very long legend title takes up a lot of space. To fix this problem (and to improve the colors of the graph), add a `scale_color_brewer()` function with the "Spectral" palette as well as a `scale_linetype` function. Use **both** scale functions to set the name of the legend to "education."
-
-
-```{r nes16, exercise = TRUE, exercise.lines = 18}
-
-```
-
-```{r nes16-hint-1, eval=FALSE}
-# The scale_color_brewer() function should take 2 arguments, but the scale_linetype() function should only take 1.
-```
-
-###
-
-Amazing work! From this graph, we see that Americans with a higher level of education tend to vote more often. Furthermore, Americans with an opinion of the president generally have higher voter turnout than Americans without an opinion of the president. Finally, pretty much 100% of Americans with an advanced decree are able to form an opinion of the president (this is why there is no Advanced Degree line in the no_opinion graph: there are too few data points in the table).
-
-To finish your plot, use `labs()` to give the graph a title and subtitle of your choosing. Here is our answer. It is OK if your answer looks somewhat different from ours.
-
-```{r, echo=FALSE}
-nes %>%
-  select(year, education, pres_appr, ideology, voted) %>%
-  filter(education %in% c("Some Highschool", "Highschool", "Some College", "Adv. Degree")) %>%
-  droplevels() %>%
-  mutate(opinion = as.factor(if_else(condition = str_detect(pres_appr, "prove"),
-                                     true = "has_opinion",
-                                     false = "no_opinion"))) %>%
-  drop_na() %>%
-  group_by(year, voted, opinion, education) %>%
-  summarize(count = n()) %>%
-  pivot_wider(names_from = voted, values_from = count) %>%
-  mutate(turnout = Yes / (Yes + No)) %>%
-  ggplot(mapping = aes(x = year,
-                       y = turnout,
-                       color = fct_reorder2(education, year,
-                                            turnout, .fun = first2),
-                       linetype = fct_reorder2(education, year, turnout,
-                                               .fun = first2))) +
-    geom_line() +
-    facet_wrap(~ opinion) +
-    scale_color_brewer(palette = "Spectral", name = "education") +
-    scale_linetype(name = "education") +
-    labs(title = "Opinions on Presidents Over Time",
-         subtitle = "People with opinions are more educated")
-```
-
-
-
-
-```{r nes17, exercise = TRUE, exercise.lines = 20}
-
-```
-
-
-
-
 ## Airline Safety 
 
 ### Exercise 1
@@ -2853,7 +2563,7 @@ We will be focusing on the data set `airline_safety` from the `fivethirtyeight` 
 
 ### Exercise 2 
 
-Do you notice anything off about the `airline_safety` data? It's untidy! Over the next few questions, we are going to fix this. Let's start by making the table "longer." Use `pivot_longer()` to pivot the columns `incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14` and  `fatalities_85_99` into the two new columns `type_date` and `count`. 
+Do you notice anything off about the `airline_safety` data? It's untidy! Over the next few questions, we are going to fix this. Let's start by making the table "longer." Use `pivot_longer()` to pivot the columns `incidents_85_99`, `incidents_00_14`, `fatal_accidents_00_14`,`fatal_accidents_85_99`, `fatalities_00_14` and  `fatalities_85_99` into the two new columns `type_date` and `count`. Call this `airline_tidy`.
 
 
 ```{r as-2, exercise=TRUE}
@@ -2862,7 +2572,7 @@ Do you notice anything off about the `airline_safety` data? It's untidy! Over th
 
 ```{r as-2-hint, eval=FALSE}
 airline_safety %>%     
-  pivot_longer(c(..., ..., ...,..., ..., ...), 
+  pivot_longer(-c(..., ..., ...), 
         names_to = "...", values_to = "...")
 ```
 
@@ -2870,6 +2580,12 @@ airline_safety %>%
 
 Nice! Do you see what our next step has to be? In our `type_date` column, we have data on both the type of incident and the date range in which it occurred. This should really be two columns. Let's use the `separate()` to separate `type_date` into the two columns `type` and `date`. Separate on the s_ characters by setting the `sep` argument inside of `separate()` to "s_". 
 
+```{r as-4-setup}
+airline_tidy <- airline_safety %>% 
+  pivot_longer(-c(airline, incl_reg_subsidiaries, avail_seat_km_per_week),
+               names_to = "type_date", 
+               values_to = "count")
+```
 
 ```{r as-4, exercise=TRUE, exercise.lines = 10}
 
@@ -2885,14 +2601,34 @@ Nice! Do you see what our next step has to be? In our `type_date` column, we hav
 
 Fantastic! Now that our data is tidy, we can get to work. `filter()` `airline_tidy` so that we narrow down our data set to data where date is "00_14", type is "incident", and count is greater than 0.
 
+```{r as-6-setup}
+airline_tidy <- airline_safety %>% 
+  pivot_longer(-c(airline, incl_reg_subsidiaries, avail_seat_km_per_week),
+               names_to = "type_date", 
+               values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_")
+```
 
-```{r as-6, exercise=TRUE, exercise.lines=10}
+
+```{r as-6, exercise=TRUE}
 
 ```
 
 ### Exercise 6
 
 Nice! Now use `mutate()` to create the new variable `safety_value` and set it equal to `avail_seat_km_per_week` divided by `count`
+
+```{r as-7-setup}
+airline_tidy <- airline_safety %>% 
+  pivot_longer(-c(airline, incl_reg_subsidiaries, avail_seat_km_per_week),
+               names_to = "type_date", 
+               values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14",
+         type == "incident",
+         count > 0)
+
+```
 
 
 ```{r as-7, exercise=TRUE, exercise.lines = 10}
@@ -2903,6 +2639,18 @@ Nice! Now use `mutate()` to create the new variable `safety_value` and set it eq
 ### Exercise 7
 
 Nice! Now arrange `airline_tidy` by `safety_value`.
+
+```{r as-8-setup}
+airline_tidy <- airline_safety %>% 
+  pivot_longer(-c(airline, incl_reg_subsidiaries, avail_seat_km_per_week),
+               names_to = "type_date", 
+               values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14",
+         type == "incident",
+         count > 0) %>%
+  mutate(safety_value = avail_seat_km_per_week / count)
+```
 
 ```{r as-8, exercise=TRUE, exercise.lines = 10}
 
@@ -2915,10 +2663,19 @@ Nice! Now arrange `airline_tidy` by `safety_value`.
 Great! Let's now use our wrangled data to create a bar plot using `geom_col()` with `airline` on the x axis and `safety_value` on the y axis. Call it `as_plot`. 
 
 ```{r as-9-setup}
-
+airline_tidy <- airline_safety %>% 
+  pivot_longer(-c(airline, incl_reg_subsidiaries, avail_seat_km_per_week),
+               names_to = "type_date", 
+               values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14",
+         type == "incident",
+         count > 0) %>%
+  mutate(safety_value = avail_seat_km_per_week / count) %>%
+  arrange(safety_value)
 ```
 
-```{r as-9, exercise=TRUE, exercise.lines=10}
+```{r as-9, exercise=TRUE}
 
 
 
@@ -2928,6 +2685,21 @@ Great! Let's now use our wrangled data to create a bar plot using `geom_col()` w
 
 Awesome! As you can see, the airline names on the y axis are crowded and basically impossible to read. Let's change this by using theme() and setting the x axis text size to 5 and angle to 90.
 
+```{r as-10-setup}
+airline_tidy <- airline_safety %>% 
+  pivot_longer(-c(airline, incl_reg_subsidiaries, avail_seat_km_per_week),
+               names_to = "type_date", 
+               values_to = "count") %>%
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14",
+         type == "incident",
+         count > 0) %>%
+  mutate(safety_value = avail_seat_km_per_week / count) %>%
+  arrange(safety_value)
+
+as_plot <- ggplot(airline_tidy, aes(x = airline, y = safety_value)) + 
+  geom_col()
+```
 
 ```{r as-10, exercise=TRUE, exercise.lines=15}
 
@@ -2943,25 +2715,25 @@ Awesome! As you can see, the airline names on the y axis are crowded and basical
 
 ### Exercise 11
 
-Great! Now add some labels to finish our plot off! Here is our version. As always, it is OK if yours looks different.
+Great! Now add some labels to finish our plot off!
 
-```{r as-11-answer, echo=FALSE}
- airline_safety %>%     
-  pivot_longer(c(incidents_85_99, incidents_00_14, fatal_accidents_00_14,
-                 fatal_accidents_85_99, fatalities_00_14, fatalities_85_99), 
-               names_to = "type_date",
+```{r as-11-setup}
+airline_tidy <- airline_safety %>% 
+  pivot_longer(-c(airline, incl_reg_subsidiaries, avail_seat_km_per_week),
+               names_to = "type_date", 
                values_to = "count") %>%
-  separate(type_date, c("type", "date"), sep = "s_") %>% 
-  filter(date == "00_14", count > 0) %>% 
-  mutate(safety_value = avail_seat_km_per_week / count) %>% 
-  arrange(safety_value) %>% 
-  ggplot(aes(x = airline, y = safety_value)) +
-    geom_col() +
-    theme(axis.text = element_text(size = 5, angle = 90)) +
-    labs(title = "Airline Safety",
-         subtitle = "Airlines with more long-haul routes are safer",
-         x = "Airline",
-         y = "Distance per Incident")
+  separate(type_date, c("type", "date"), sep = "s_") %>%
+  filter(date == "00_14",
+         type == "incident",
+         count > 0) %>%
+  mutate(safety_value = avail_seat_km_per_week / count) %>%
+  arrange(safety_value)
+
+as_plot <- ggplot(airline_tidy, aes(x = airline, y = safety_value)) + 
+  geom_col() + 
+  theme(axis.text.x = element_text(size = 5, angle = 90))
+
+
 ```
 
 ```{r as-11, exercise=TRUE, exercise.lines=20}
@@ -2976,7 +2748,7 @@ Great! Now add some labels to finish our plot off! Here is our version. As alway
 
 We will be focusing on the data set `partisan_lean_district`, from the `fivethirtyeight` package. This data set includes the data which five thirty eight uses for their political projections.  Let's start by using the `skim()` function on `partisan_lean_district`
 
-```{r pld-1, exercise=TRUE, exercise.lines=10}
+```{r pld-1, exercise=TRUE}
 
 ```
 
@@ -3445,20 +3217,28 @@ unisex_names_1 %>%
 
 Awesome! Now use the `<-` assignment operator to save this to the new data set `unisex_names_2`.
 
-```{r un-8, exercise=TRUE, eval=FALSE, exercise.lines=6}
+```{r un-8-setup}
+unisex_names_1 <- unisex_names %>% 
+  mutate(first_letter = str_sub(unisex_names$name, 1,1))
+```
+
+```{r un-8, exercise=TRUE, eval=FALSE}
 
   
 ```
 
 ```{r un-8-hint, eval=FALSE}
 ... <- unisex_names_1 %>%
-  group_by(first_letter) %>% 
-  summarize(mean = mean(total))
+  group_by(...) %>% 
+  summarize(mean = mean(...))
 ```
 
 ### Exercise 9
 
 ```{r un-9-setup}
+unisex_names_1 <- unisex_names %>% 
+  mutate(first_letter = str_sub(unisex_names$name, 1,1))
+
 unisex_names_2 <- unisex_names_1 %>%
   group_by(first_letter) %>% 
   summarize(mean = mean(total))
@@ -3478,7 +3258,7 @@ Let's use our data to make a plot. Use `unisex_names_2` and `geom_col()` to make
 
 ### Exercise 1
 
-Let's do some data wrangling with the `bad_drivers` tibble from the `fivethirtyeight` package! First `skim()` the `bad_driverse` dataset.
+Let's do some data wrangling with the `bad_drivers` tibble from the `fivethirtyeight` package! First `skim()` the `bad_drivers` dataset.
 
 ```{r bd1, exercise=TRUE}
 
@@ -3486,7 +3266,7 @@ Let's do some data wrangling with the `bad_drivers` tibble from the `fivethirtye
 
 ### Exercise 2
 
-Use `select()` to remove `num_drivers`, `insurance_premiums`, and `losses` from the tibble. We can do this using the `-` operator. Call this `bd_subset`. 
+Use `select()` to remove `num_drivers`, `insurance_premiums`, and `losses` from the tibble. Call this `bd_subset`. 
 
 ```{r bd-2, exercise=TRUE}
 
@@ -3663,7 +3443,8 @@ Use `ggplot` and `geom_line()`, map x to `day_number` and y to `births`. Call th
 ```{r usb5-setup}
 USB_2000 <- US_births_1994_2003 %>%
   filter(year == 2000) %>%
-  select(date, births)
+  select(date, births) %>%
+  mutate(day_number = yday(date))
 ```
 
 ```{r usb5, exercise=TRUE}
@@ -3714,8 +3495,7 @@ USB_2000 <- US_births_1994_2003 %>%
   filter(year == 2000) %>%
   select(date, births) %>% mutate(day_number = yday(date)) %>%
   mutate(week_number = week(date)) %>%
-  group_by(week_number) %>%
-  summarize(avg_week_births = mean(births))
+  group_by(week_number)
 ```
 
 ```{r usb8, exercise=TRUE}
